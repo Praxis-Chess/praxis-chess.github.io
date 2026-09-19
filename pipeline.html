@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How it works · Praxis Chess</title>
+<meta name="robots" content="noindex,follow" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#121110" />
+<!-- THE CANONICAL IS THE NARRATIVE PAGE, NOT THIS ONE.
+     The site used to be three documents; it is now one, and the process
+     section lives inside it. This file exists so that /pipeline — bookmarked,
+     linked, indexed — keeps working instead of 404ing, and it tells crawlers
+     to credit the one real page rather than treating this as a duplicate. -->
+<link rel="canonical" href="https://praxischess.app/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+
+<!-- THREE REDIRECTS, AND EACH COVERS A CASE THE OTHERS DO NOT.
+     vercel.json and _redirects issue a real 308 at the edge, so on either
+     host this file is never served at all. The script below is instant for
+     anyone who reaches it anyway. The <meta refresh> is the floor: it is what
+     fires with JavaScript disabled, and the visible link under it is what
+     fires when even that is blocked. -->
+<script>location.replace('/#pipeline');</script>
+<meta http-equiv="refresh" content="0; url=/#pipeline" />
+<style>
+  html,body{ margin:0; min-height:100%; background:#121110; color:#A29B96;
+             font-family:'Inter Tight',system-ui,-apple-system,sans-serif; }
+  main{ min-height:100vh; display:flex; flex-direction:column; gap:14px;
+        align-items:flex-start; justify-content:center; padding:0 clamp(20px,6vw,64px); }
+  p{ margin:0; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+     font-family:'JetBrains Mono',ui-monospace,Consolas,monospace; color:#6D6662; }
+  a{ color:#E7A6D6; font-size:1.1rem; font-weight:600; letter-spacing:-.02em;
+     text-decoration:none; }
+  a:hover{ color:#B0679F; }
+</style>
+</head>
+<body>
+<main>
+  <p>Praxis <span style="color:#E7A6D6">//</span> moved</p>
+  <a href="/#pipeline">Continue to how Praxis works →</a>
+</main>
+</body>
+</html>

@@ -1,0 +1,948 @@
+/* ==========================================================================
+   site.css — the scene system, the persistent chrome, and nine compositions.
+
+   READS TOKENS ONLY. Every colour, radius and duration comes from
+   css/base.css, which copies the Praxis application's own system.
+
+   THE PAGE IS NOT A DOCUMENT AND NOT A SLIDESHOW.
+   js/scroll.js translates one track and publishes, per scene, how far through
+   it you are, as --p on the scene element. Everything below reads --p. That
+   keeps the choreography declarative, keeps it on the compositor, and means a
+   scene can be re-timed without touching JavaScript.
+
+   ORDER: the scene machinery, the persistent chrome, the type scale, the
+   shared objects, then the nine scenes in the order you meet them.
+   ========================================================================== */
+
+/* ==========================================================================
+   1 · THE STAGE AND THE SCENES
+   ========================================================================== */
+
+/* THE DESKTOP BUILD DOES NOT SCROLL. js/scroll.js owns the wheel gesture and
+   moves .track; the document never moves, which is what lets the organism,
+   the scenes and the rail all read one eased number. css/mobile.css undoes
+   every line of this below 760px, where the platform is better at it. */
+html,body{ height:100%; overflow:hidden; }
+
+.stage{
+  position:fixed; inset:0;
+  z-index:var(--z-panes);
+  /* CLIP, NOT HIDDEN, AND THE DIFFERENCE IS THE WHOLE BUG.
+     `overflow:hidden` clips the track AND makes this box a scrollport — one
+     with no scrollbar and no user gesture, but a scrollport all the same, and
+     the browser will scroll it programmatically whenever it wants to bring
+     something into view. Clicking a link to /#pipeline made Chrome scroll the
+     stage 4,950px to reach that scene while js/scroll.js's accumulator stayed
+     at zero. The stage showed the region around scene four, the track was
+     still translated to zero, and every scene down there was
+     content-visibility:hidden — so the page went blank, with nothing in the
+     console to say why.
+
+     `overflow:clip` clips identically and creates no scroll container, so
+     there is nothing for the browser to scroll. The `hidden` above it is the
+     fallback for engines that do not know `clip`; js/scroll.js pins the
+     scroll offset for those. */
+  overflow:hidden;
+  overflow:clip;
+  /* The stage never takes the pointer; the scenes' own content does. A fixed
+     full-screen layer that swallows events is the classic way to make
+     everything behind it inert. */
+  pointer-events:none;
+}
+.track{ will-change:transform; }
+
+.scene{
+  position:relative;
+  width:100%;
+  /* Height is written by js/scroll.js from data-len, in viewports. It is not
+     set here because a scene's length is a narrative decision that belongs in
+     the markup, next to the content it paces. */
+  pointer-events:auto;
+  --p:0;
+}
+.scene__pin{
+  position:relative;
+  height:100vh; height:100svh;
+  will-change:transform;
+  display:flex;
+  align-items:center;
+  align-items:safe center;
+  /* CLEARS THE FIXED CHROME. The masthead is 52px at the top and the strip is
+     26px at the bottom, both fixed, and a pin that is exactly one viewport
+     tall otherwise puts its first line under one and its last under the
+     other. box-sizing keeps the height at 100vh, which the pin arithmetic in
+     js/scroll.js depends on. */
+  padding-top:calc(var(--header-h) + var(--s-4));
+  padding-bottom:calc(26px + var(--s-4));
+}
+.scene__in{
+  position:relative; width:100%;
+  max-width:var(--page-max);
+  margin-inline:auto;
+  padding-inline:var(--gutter);
+}
+.scene__in--wide{ max-width:1420px; }
+
+/* ---- the staged reveal ---------------------------------------------------
+   One utility, used by every scene. An element declares WHEN in its scene it
+   happens and how fast, and reads back a 0..1 of its own:
+
+       <p class="at at--rise" style="--s0:.35;--inv:4">
+
+   --s0 is the scene progress it begins at, --inv is one over its span (here a
+   quarter of the scene, so 4). Two numbers rather than a start and an end
+   because CSS calc cannot divide by a variable, only multiply — and writing
+   the reciprocal by hand beats shipping a JavaScript interpolator for
+   something the compositor does for free. */
+.at{
+  --s0:0; --inv:1;
+  --a:clamp(0, calc((var(--p) - var(--s0)) * var(--inv)), 1);
+}
+.at--rise{
+  opacity:var(--a);
+  transform:translate3d(0, calc((1 - var(--a)) * var(--rise,34px)), 0);
+}
+.at--fall{
+  opacity:var(--a);
+  transform:translate3d(0, calc((var(--a) - 1) * var(--rise,34px)), 0);
+}
+.at--fade{ opacity:var(--a); }
+.at--out{ opacity:calc(1 - var(--a)); }
+.at--scale{ opacity:var(--a); transform:scale(calc(.94 + var(--a) * .06)); }
+
+/* .rc — THE SECOND CHANNEL: how far a thing has RECEDED.
+
+   .at answers "how far has this arrived". A composition that introduces
+   elements one at a time also needs the opposite question answered, because
+   the moment a new frame lands the previous one has to stop competing with
+   it. CSS gives an element no way to read its successor's --a, so this is the
+   same clamp on a second variable with its own start and span.
+
+   Default --r0:1 puts the start at the end of the scene, so --b stays 0 on
+   anything that does not opt in. */
+.rc{
+  --r0:1; --rinv:1;
+  --b:clamp(0, calc((var(--p) - var(--r0)) * var(--rinv)), 1);
+}
+
+/* ==========================================================================
+   2 · THE GROUND
+
+   There is nothing here, and that is the decision.
+
+   This slot held a WebGL point-cloud organism, then a pair of very soft
+   orchid radial gradients standing in for it. Both were removed for the same
+   reason: on a near-black canvas an ambient pink wash reads as a smudge on
+   the screen rather than as depth, and it put the accent colour somewhere it
+   carries no meaning. Orchid is a signal on this site - the primary action,
+   one word per heading, the marked square - and a glow behind everything is
+   the fastest way to spend that.
+
+   What gives the canvas its material is .grain, at 3% over the whole
+   viewport, exactly as the application does it.
+   ========================================================================== */
+
+/* ==========================================================================
+   3 · PERSISTENT CHROME
+
+   Four fixed pieces that never move while sixteen viewports pass behind them:
+   the masthead, the rail, the bottom strip and the corner marks. They are the
+   constant the composition changes against, and they carry the page's
+   technical texture so the scenes do not have to.
+   ========================================================================== */
+.hdr{
+  position:fixed; top:0; left:0; right:0;
+  z-index:var(--z-header);
+  height:var(--header-h);
+  display:flex; align-items:center;
+  /* No background and no border. The masthead sits ON the composition rather
+     than in a bar above it — a filled strip across the top is the fastest way
+     to make this read as a conventional page again. Difference blending keeps
+     it legible over both the near-black scenes and any bright capture that
+     passes underneath. */
+  mix-blend-mode:difference;
+}
+.hdr__inner{
+  width:100%; padding-inline:var(--gutter);
+  display:flex; align-items:center; gap:clamp(16px,3vw,36px);
+}
+.brand{ display:inline-flex; align-items:center; gap:9px; flex:none; }
+.brand img{ height:20px; width:auto; display:block; }
+.brand span{
+  font-family:var(--font-mono); font-size:11px; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--text-primary);
+}
+.nav{ display:flex; align-items:center; gap:clamp(14px,2.4vw,28px);
+      margin-left:clamp(20px,4vw,64px); }
+.nav__link{
+  font-family:var(--font-mono); font-size:10px; font-weight:500;
+  letter-spacing:var(--track-micro); text-transform:uppercase;
+  color:var(--text-secondary); white-space:nowrap;
+  transition:color var(--dur-fast);
+}
+.nav__link:hover{ color:var(--text-primary); }
+.hdr__actions{ margin-left:auto; display:flex; align-items:center; gap:var(--s-3); }
+/* The one solid control opts out of the blend, which would otherwise invert
+   it into something unreadable. */
+.hdr__actions .btn,.burger{ mix-blend-mode:normal; }
+/* And it sits at the masthead's scale, not the page's. Everything else up
+   here is 10px tracked mono; a 13px semibold button beside that reads as a
+   control borrowed from another site. */
+.hdr__actions .btn{
+  font-family:var(--font-mono);
+  font-size:10px; font-weight:700;
+  letter-spacing:var(--track-micro); text-transform:uppercase;
+  /* HEIGHT, NOT PADDING, AND THE CORNER MARKS ARE WHY. This control is the
+     only filled shape in the masthead, so it is the one the eye registers the
+     top of the page against — and it was landing 3.5px above the corner tick
+     beside it, which is exactly the distance at which two things look wrong
+     rather than different. Fixing the height makes the leftover space above
+     and below it a known number (--mark-inset), and the ticks are placed from
+     that number, so the two edges are the same line by construction. */
+  height:var(--ctl-h);
+  padding:0 13px;
+}
+
+.burger{
+  display:none; width:32px; height:32px;
+  align-items:center; justify-content:center;
+}
+.burger span{ display:block; width:16px; height:1px; background:var(--text-primary);
+              position:relative; }
+.burger span::before,.burger span::after{
+  content:''; position:absolute; left:0; width:16px; height:1px;
+  background:var(--text-primary); transition:transform var(--dur-base) var(--ease-out);
+}
+.burger span::before{ top:-5px; }
+.burger span::after{ top:5px; }
+.burger[aria-expanded="true"] span{ background:transparent; }
+.burger[aria-expanded="true"] span::before{ transform:translateY(5px) rotate(45deg); }
+.burger[aria-expanded="true"] span::after{ transform:translateY(-5px) rotate(-45deg); }
+
+.menu{
+  position:fixed; inset:0; z-index:var(--z-menu);
+  background:var(--canvas-deep);
+  padding:calc(var(--header-h) + var(--s-6)) var(--gutter) var(--s-8);
+  overflow-y:auto;
+}
+.menu[hidden]{ display:none; }
+.menu__link{
+  display:flex; align-items:baseline; justify-content:space-between;
+  padding:var(--s-4) 0;
+  font-size:clamp(1.8rem,9vw,2.6rem); font-weight:600;
+  letter-spacing:var(--track-display); line-height:1.05;
+}
+.menu__link i{ font-family:var(--font-mono); font-style:normal; font-size:10px;
+               letter-spacing:var(--track-micro); color:var(--text-tertiary); }
+.menu__foot{ margin-top:var(--s-7); display:grid; gap:var(--s-3); }
+
+/* ---- the rail ------------------------------------------------------------
+   With no scrollbar there is no way to know how long the page is or how far
+   in you are, and that absence is the usual reason a page like this feels
+   broken rather than smooth. Each tick is also a button. */
+.rail{
+  position:fixed; right:0; top:50%; transform:translateY(-50%);
+  z-index:var(--z-header);
+  display:flex; flex-direction:column; gap:1px;
+  padding:10px var(--gutter) 10px 10px;
+}
+.rail__tick{
+  display:flex; align-items:center; justify-content:flex-end; gap:10px;
+  height:20px; color:var(--text-tertiary);
+}
+.rail__tick i{
+  display:block; width:14px; height:1px; background:currentColor; opacity:.45;
+  transition:width var(--dur-base) var(--ease-out), opacity var(--dur-base);
+}
+.rail__tick b{
+  font-family:var(--font-mono); font-size:9px; font-weight:500;
+  letter-spacing:var(--track-micro); text-transform:uppercase;
+  opacity:0; transform:translateX(6px);
+  transition:opacity var(--dur-base), transform var(--dur-base) var(--ease-out);
+  white-space:nowrap; pointer-events:none;
+}
+.rail:hover .rail__tick b{ opacity:.7; transform:none; }
+.rail__tick:hover{ color:var(--text-secondary); }
+.rail__tick.is-on{ color:var(--orchid); }
+.rail__tick.is-on i{ width:30px; opacity:1; }
+.rail__tick.is-on b{ opacity:1; transform:none; }
+
+/* ---- the bottom strip ---------------------------------------------------
+   System texture, and it earns its place by being true: the scene name comes
+   from the accumulator, the percentage is real travel, the clock is a real
+   clock. A readout that is decorative would make all the others look
+   decorative too. */
+.strip{
+  position:fixed; left:0; right:0; bottom:0; z-index:var(--z-header);
+  height:26px; display:flex; align-items:center; gap:var(--s-5);
+  padding-inline:var(--gutter);
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+  background:linear-gradient(180deg, transparent, rgba(12,11,10,.88) 55%);
+  pointer-events:none;
+}
+.strip b{ color:var(--text-secondary); font-weight:500; }
+.strip__gap{ margin-left:auto; }
+.strip__bar{
+  position:absolute; left:0; bottom:0; height:1px;
+  width:calc(var(--sp,0) * 100%); background:var(--orchid); opacity:.8;
+}
+
+/* ---- corner marks -------------------------------------------------------
+   Four registration ticks at the viewport corners, borrowed from the
+   application's card mark and scaled up to frame the whole page. */
+.marks{ position:fixed; inset:0; z-index:var(--z-header); pointer-events:none; }
+.marks i{ position:absolute; width:9px; height:9px; opacity:.45;
+          border:0 solid var(--text-tertiary); }
+/* The inset is derived, not chosen: --mark-inset is the space the masthead
+   button leaves above itself, so the top ticks and the button's top edge sit
+   on one line. The bottom pair clears the readout strip instead. */
+.marks i:nth-child(1){ top:var(--mark-inset); left:var(--mark-inset);
+                       border-top-width:1px; border-left-width:1px; }
+.marks i:nth-child(2){ top:var(--mark-inset); right:var(--mark-inset);
+                       border-top-width:1px; border-right-width:1px; }
+.marks i:nth-child(3){ bottom:34px; left:var(--mark-inset);
+                       border-bottom-width:1px; border-left-width:1px; }
+.marks i:nth-child(4){ bottom:34px; right:var(--mark-inset);
+                       border-bottom-width:1px; border-right-width:1px; }
+
+.hint{
+  position:fixed; left:var(--gutter); bottom:42px; z-index:var(--z-header);
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+  transition:opacity var(--dur-base);
+}
+.hint i{ display:block; width:24px; height:1px; background:currentColor;
+         position:relative; overflow:hidden; }
+.hint i::after{
+  content:''; position:absolute; inset:0; background:var(--orchid);
+  transform:translateX(-100%);
+  animation:hintSweep 2.6s var(--ease-out) infinite;
+}
+@keyframes hintSweep{ 0%{transform:translateX(-100%)} 55%,100%{transform:translateX(100%)} }
+html.is-moved .hint{ opacity:0; }
+
+/* ==========================================================================
+   4 · TYPE — the editorial scale
+
+   Four sizes with real distance between them, because contrast is what makes
+   typography compose rather than merely fill: a 9px label, a reading size, a
+   statement, and something that runs at the edge of the screen.
+   ========================================================================== */
+.t-mega{
+  font-size:clamp(2.4rem, 7.6vw, 8.2rem);
+  line-height:.87; letter-spacing:-0.045em; font-weight:600;
+  text-transform:uppercase;
+}
+.t-big{
+  font-size:clamp(1.9rem, 5vw, 4.8rem);
+  line-height:.95; letter-spacing:-0.035em; font-weight:600;
+  text-transform:uppercase;
+}
+.t-mid{
+  font-size:clamp(1.25rem, 2.2vw, 2rem);
+  line-height:1.14; letter-spacing:-0.022em; font-weight:600;
+}
+.t-read{ font-size:var(--t-lead); line-height:1.5; color:var(--text-secondary);
+         max-width:42ch; }
+.t-note{ font-size:var(--t-small); line-height:1.55; color:var(--text-secondary);
+         max-width:38ch; }
+
+.pink{ color:var(--orchid); }
+.dim2{ color:var(--text-tertiary); }
+/* Outlined type: the engine's half of a statement, present but not asserted,
+   so the Praxis half lands against something. */
+.ghost{ color:transparent; -webkit-text-stroke:1px rgba(242,237,234,.32); }
+
+/* A line clipped by its own box, sliding out from under the edge. Used where
+   a statement should feel uncovered rather than faded up. */
+.mask{ overflow:hidden; display:block; }
+.mask > span{
+  display:block;
+  transform:translate3d(0, calc((1 - var(--a,1)) * 105%), 0);
+}
+
+/* ==========================================================================
+   5 · SHOTS — the application captures
+
+   Geometry only: no card, no radius, no shadow. A capture is placed the way a
+   photograph is placed on a spread — cropped, oversized, overlapped,
+   sometimes past the edge of the page.
+   ========================================================================== */
+.shot{
+  position:relative; display:block; overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,.012));
+  /* One hairline, and only because a capture of a near-black UI on a
+     near-black page has no edge of its own. */
+  box-shadow:0 0 0 1px var(--hairline);
+}
+.shot__img{ width:100%; height:100%; object-fit:cover; display:block; }
+.shot--contain .shot__img{ object-fit:contain; background:var(--canvas-deep); }
+
+/* The placard, while a capture is outstanding. It keeps the slot's exact
+   geometry so nothing reflows when the image lands, and it names the file it
+   is waiting for rather than drawing an imaginary version of the product. */
+.shot__await{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; justify-content:flex-end; gap:5px;
+  padding:14px;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+  background-image:repeating-linear-gradient(135deg,
+    rgba(255,255,255,.022) 0 2px, transparent 2px 7px);
+}
+.shot.is-ready .shot__await{ display:none; }
+.shot__ref{ color:var(--orchid); font-weight:700; }
+.shot__file{ color:var(--text-secondary); text-transform:none; letter-spacing:.04em; }
+.shot__note{ opacity:.8; }
+
+/* Treatments — composition, not decoration. Each exists because a particular
+   scene needed the capture to behave a particular way. */
+.shot--bleed-r{ margin-right:calc((var(--gutter) + 6vw) * -1); }
+.shot--tilt{ transform:rotate(-1.3deg); }
+.shot--tilt-r{ transform:rotate(1deg); }
+.shot--wide{ aspect-ratio:16 / 10; }
+.shot--panel{ aspect-ratio:4 / 3; }
+.shot--tall{ aspect-ratio:3 / 4; }
+.shot--strip{ aspect-ratio:21 / 7; }
+
+/* ==========================================================================
+   6 · SHARED OBJECTS
+   ========================================================================== */
+
+/* ---- the board ----------------------------------------------------------
+   64 cells from a FEN, in the application's own board colours. All six glyphs
+   are the FILLED Unicode set for both colours, tinted by CSS: the outline set
+   is drawn as hairlines by most system fonts and vanishes on a dark square at
+   this size. */
+.board{
+  --sq:clamp(20px,1.8vw,28px);
+  display:grid;
+  grid-template-columns:repeat(8,var(--sq));
+  grid-template-rows:repeat(8,var(--sq));
+  width:calc(var(--sq) * 8);
+  position:relative; flex:none;
+  /* Without JavaScript this is still a board. */
+  background-color:var(--board-dark);
+  background-image:
+    linear-gradient(45deg,rgba(227,219,209,.09) 25%,transparent 25%,transparent 75%,rgba(227,219,209,.09) 75%),
+    linear-gradient(45deg,rgba(227,219,209,.09) 25%,transparent 25%,transparent 75%,rgba(227,219,209,.09) 75%);
+  background-size:25% 25%; background-position:0 0, 12.5% 12.5%;
+}
+.board__sq{
+  position:relative; display:flex; align-items:center; justify-content:center;
+  background:var(--board-dark);
+  font-family:'Segoe UI Symbol','Apple Symbols','Noto Sans Symbols 2','DejaVu Sans',sans-serif;
+  font-size:calc(var(--sq) * .76); line-height:1; user-select:none;
+}
+.board__sq.is-light{ background:var(--board-light); }
+.board__sq[data-c="w"]{ color:#FBFAF8; text-shadow:0 0 1px rgba(0,0,0,.5); }
+.board__sq[data-c="b"]{ color:#2A2523; }
+.board__sq.is-from::after,.board__sq.is-to::after{
+  content:''; position:absolute; inset:0;
+  background:var(--mark,var(--loss)); opacity:.34;
+}
+.board__sq.is-to::before{
+  content:''; position:absolute; inset:16%;
+  border:1.5px solid var(--mark,var(--loss));
+}
+.board[data-tone="good"] .board__sq.is-from,
+.board[data-tone="good"] .board__sq.is-to{ --mark:var(--gain); }
+.board__file,.board__rank{ display:none; }
+
+/* ---- a move fragment ----------------------------------------------------
+   The atom of the whole page: one move, its evaluation, its verdict.
+   Deliberately not a card — no background, no border, no radius. Just
+   alignment and type, so forty of them can sit on one screen without the
+   screen becoming a table. */
+.mvf{
+  display:flex; align-items:baseline; gap:10px;
+  font-family:var(--font-mono); font-size:11px; letter-spacing:.02em;
+  white-space:nowrap;
+}
+.mvf b{ color:var(--text-primary); font-weight:700; }
+.mvf i{ font-style:normal; color:var(--text-tertiary); }
+.mvf s{ text-decoration:none; color:var(--loss); font-weight:700; }
+.mvf s.good{ color:var(--gain); }
+.mvf--lg{ font-size:clamp(13px,1.05vw,16px); gap:14px; }
+
+/* ---- a metric ----------------------------------------------------------- */
+.met{ display:flex; flex-direction:column; gap:4px; }
+.met__v{
+  font-family:var(--font-mono); font-weight:700; line-height:.9;
+  font-size:clamp(1.7rem,3.6vw,3.2rem); letter-spacing:-0.04em;
+  color:var(--text-primary);
+}
+.met__v span{ color:var(--orchid); }
+.met__l{
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+}
+/* A divider between adjacent metrics. Drawn as a rule rather than typed as a
+   pipe character, because a glyph would carry the mono font's own weight and
+   baseline into a row whose only job is to separate four numbers — and this
+   way it lines up with the digits instead of with the text baseline. */
+.met__sep{
+  align-self:stretch; width:1px; flex:none;
+  background:var(--hairline-lit);
+  /* Stops short at both ends so it reads as a tick between two figures, not
+     as a table border. */
+  margin-block:2px 6px;
+}
+
+/* ---- eval bar ----------------------------------------------------------- */
+.eval{ position:relative; height:4px; background:var(--board-dark); overflow:hidden; }
+.eval i{ position:absolute; inset:0 auto 0 0; width:var(--w,50%);
+         background:var(--board-light); display:block; }
+.eval u{ position:absolute; left:50%; top:-2px; bottom:-2px; width:1px;
+         background:var(--orchid); }
+
+/* ---- a labelled hairline ------------------------------------------------
+   Replaces most of what used to be a border. A rule with a word on it
+   separates two things and says why; a box around one of them does not. */
+.rule{
+  display:flex; align-items:center; gap:var(--s-4);
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+}
+.rule::after{ content:''; flex:1 1 auto; height:1px; background:var(--hairline); }
+
+/* ==========================================================================
+   7 · SCENE 01 — HERO
+   Left-heavy statement past the measure, a capture entering from the right
+   edge, the organism between them.
+   ========================================================================== */
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);
+  align-items:center; gap:clamp(24px,4vw,72px);
+}
+/* Its own ceiling, below the global one. --t-mega is right for `local` and
+   `end`, which are three lines and nothing else; the hero is six lines plus
+   four more elements and has to come down to fit beside them. */
+.hero .t-big{ font-size:clamp(1.5rem, 3.6vw, 3.5rem); }
+.hero .t-mega{ font-size:clamp(2.2rem, 6.8vw, 7.4rem); }
+
+.hero__say{
+  position:relative; z-index:2;
+  /* The hero does not simply scroll away, it hands over. */
+  transform:translate3d(0, calc(var(--p) * -13vh), 0);
+  opacity:calc(1 - var(--p) * .9);
+}
+.hero__eyebrow{ margin-bottom:var(--s-5); }
+.hero__l2{ margin-top:.05em; }
+.hero__cta{ margin-top:var(--s-6); display:flex; gap:var(--s-3); flex-wrap:wrap; }
+.hero__meta{ margin-top:var(--s-6); display:flex; gap:var(--s-6); flex-wrap:wrap; }
+.hero__shot{
+  position:relative; z-index:1;
+  transform:translate3d(0, calc(var(--p) * -21vh), 0);
+}
+.hero__shot .shot{ aspect-ratio:16 / 11; }
+
+/* ==========================================================================
+   8 · SCENE 02 — THE PROBLEM
+   One move becomes many becomes one pattern. The signature moment, and the
+   only place where the motion IS the argument rather than decoration.
+   ========================================================================== */
+/* A column, not a stack: the cross-fading layers get whatever height is left
+   after the counters have taken theirs, so the two can never collide however
+   short the window gets. */
+.prob__stage{
+  position:relative; min-height:62vh;
+  display:flex; flex-direction:column;
+}
+.prob__over{ position:relative; flex:1 1 auto; min-height:0; }
+.prob__one{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:var(--s-4); text-align:center;
+}
+.prob__many{
+  position:absolute; inset:0;
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(148px, 1fr));
+  align-content:center; gap:10px 22px;
+}
+.prob__many .mvf{
+  opacity:calc(var(--a) * .72);
+  transform:translate3d(0, calc((1 - var(--a)) * 18px), 0);
+}
+.prob__line{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+}
+/* The payoff and its gloss are one stack, centred as a pair. Without this the
+   flex item sizes to the wider of the two and the shorter line hangs left. */
+.prob__line > div{ display:flex; flex-direction:column; align-items:center; }
+/* The payoff line and the plain-English gloss under it. The gloss is set at
+   the reading colour rather than the note colour so it is actually read: it
+   is the only sentence in the scene aimed at someone who does not already
+   know the vocabulary, and there is no point hiding it. */
+.prob__gloss{
+  margin-top:var(--s-4); max-width:46ch;
+  margin-inline:auto;
+}
+/* The key over the accumulation grid: one mono line naming the three columns,
+   sitting across the full width above them. */
+.prob__key{
+  grid-column:1 / -1;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+  margin-bottom:var(--s-3);
+}
+.prob__count{ flex:none; margin-top:var(--s-5); }
+.prob__count-k{
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+  margin-bottom:var(--s-4);
+  padding-bottom:var(--s-3);
+  border-bottom:1px solid var(--hairline);
+}
+.prob__counters{
+  display:flex; align-items:stretch; justify-content:space-between;
+  gap:var(--s-5); flex-wrap:wrap;
+}
+
+/* ==========================================================================
+   9 · SCENE 03 — THE DIFFERENCE
+   Not two cards. A dim narrow column of engine output against one enormous
+   Praxis statement, with a capture bleeding off the right edge.
+   ========================================================================== */
+.diff{
+  display:grid;
+  grid-template-columns:minmax(0,.34fr) minmax(0,.66fr);
+  gap:clamp(24px,5vw,84px); align-items:start;
+}
+/* Same reasoning as the hero: this scene carries two statements, a paragraph
+   and a capture, so it takes a lower ceiling than the scenes that carry one
+   statement and nothing else. */
+.diff .t-big{ font-size:clamp(1.6rem, 4.2vw, 4rem); }
+.diff__engine{ padding-top:5vh; }
+.diff__list{ display:grid; gap:7px; margin-top:var(--s-5); }
+.diff__list .mvf{ opacity:calc(.32 + var(--a) * .3); }
+.diff__shot{ margin-top:var(--s-5); transform:translate3d(calc(var(--p) * 4vw),0,0); }
+.diff__shot .shot{ aspect-ratio:3 / 1; }
+
+/* ==========================================================================
+   10 · SCENE 04 — HOW IT WORKS
+   Five stages that CONDENSE. The left column loses rows as you travel; the
+   right names what is left.
+   ========================================================================== */
+.pipe{
+  display:grid;
+  grid-template-columns:minmax(0,.44fr) minmax(0,.56fr);
+  gap:clamp(24px,5vw,80px); align-items:center;
+}
+.pipe__feed{
+  position:relative; height:56vh; overflow:hidden;
+  mask-image:linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image:linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+}
+.pipe__rows{ display:grid; gap:6px; }
+/* Each row leaves at its own point, so the column visibly thins rather than
+   fading as a block. The rows marked .keeps never leave: they are what
+   survives the filter. */
+.pipe__rows .mvf{ opacity:calc(1 - var(--a) * .94); }
+.pipe__rows .keeps{ opacity:1; }
+.pipe__stages{ display:grid; gap:var(--s-4); }
+.pipe__stage{
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:var(--s-4);
+  align-items:baseline; opacity:calc(.16 + var(--a) * .84);
+}
+.pipe__n{ font-family:var(--font-mono); font-size:10px; font-weight:700;
+          letter-spacing:var(--track-micro); color:var(--orchid); }
+.pipe__t{ font-size:clamp(1.05rem,1.6vw,1.45rem); font-weight:600;
+          letter-spacing:-0.02em; }
+.pipe__b{ grid-column:2; font-size:var(--t-small); color:var(--text-secondary);
+          max-width:44ch; margin-top:2px; }
+
+/* ==========================================================================
+   11 · SCENE 05 — THE REPORT
+   The capture is the composition. Typography lands on top of it; the
+   fragments sit outside it and point at it.
+   ========================================================================== */
+.rep{ position:relative; }
+.rep__shot{
+  position:relative; width:min(74%, 960px); margin-left:auto;
+  transform:translate3d(0, calc((1 - var(--p)) * 5vh), 0) rotate(-1deg);
+}
+.rep__shot .shot{ aspect-ratio:16 / 10; }
+.rep__say{
+  position:absolute; left:0; top:44%; z-index:3;
+  max-width:min(54%, 640px);
+  /* Overlapping the capture on purpose: the statement is about what is in
+     the picture, so it should be touching it. */
+  text-shadow:0 2px 30px rgba(12,11,10,.94);
+}
+.rep__frags{ position:absolute; left:0; top:0; display:grid; gap:var(--s-4); z-index:3; }
+/* The second capture sits UNDER the statement and OVER the first one, at the
+   corner where the big frame has nothing in it. Overlapping two screenshots
+   is the cheapest way to say there is more of this product than one screen. */
+.rep__ask{
+  position:absolute; right:-2%; bottom:-6%; width:30%; z-index:2;
+}
+.rep__frag{ display:flex; align-items:baseline; gap:12px; }
+.rep__frag b{
+  font-family:var(--font-mono); font-size:clamp(1.3rem,2.4vw,2.2rem);
+  font-weight:700; letter-spacing:-0.03em; color:var(--text-primary);
+}
+.rep__frag span{
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+}
+
+/* ==========================================================================
+   12 · SCENE 06 — ANALYSIS TO PRACTICE
+   Five captures introduced one at a time, overlapping, each with a word.
+   ========================================================================== */
+.prac{ position:relative; height:70vh; }
+
+/* DEPTH, BECAUSE FIVE SHARP OVERLAPPING SCREENSHOTS ARE NOT A COMPOSITION.
+
+   Every frame here used to be rendered at full contrast and full sharpness,
+   which is the one thing a stack of overlapping images must not do: with no
+   focal plane the eye cannot tell which frame is the subject and which are
+   behind it, so it reads five equally loud pictures fighting over the same
+   space. Real depth of field is what a camera would give this, and it is what
+   the arrangement has been asking for.
+
+   So each frame recedes the moment the next one arrives: it blurs, dims and
+   drops back a couple of percent in scale, and the newest capture is the only
+   one in focus. The amount is graded by position in the stack rather than
+   applied uniformly (--blur and --dim below), so the first frame ends up
+   further away than the fourth and the five read as a receding series rather
+   than a foreground and one flat backdrop.
+
+   COST: blur is the expensive filter, but --b is a clamp that is pinned at 0
+   or 1 for most of the scene and only moves through a narrow band around each
+   handover, so the radius is a constant almost all the time and the layer
+   caches. No will-change here on purpose: five promoted layers holding large
+   captures costs more than the blur does. */
+.prac__step{
+  position:absolute;
+  /* var(--b, 0), NOT var(--b). The last frame in the stack has nothing after
+     it, so it carries no .rc and --b is simply not defined on it — and an
+     undefined var() inside calc() does not fall back to zero, it poisons the
+     whole declaration at computed-value time. Written without the fallback,
+     this element silently lost its opacity AND its transform and sat at full
+     strength from the first frame of the scene, before its own cue. */
+  opacity:calc(var(--a) * (1 - var(--b, 0) * var(--dim, .5)));
+  transform:translate3d(0, calc((1 - var(--a)) * 42px), 0)
+            scale(calc(1 - var(--b, 0) * .045));
+  filter:blur(calc(var(--b, 0) * var(--blur, 6px)));
+}
+/* The words never recede. They are the sentence the scene is making, and the
+   blur exists to get the frames out of their way — so they sit above every
+   capture, sharp, whichever one is currently in focus. */
+.prac__word{
+  position:absolute; z-index:20; pointer-events:none;
+  font-weight:600; letter-spacing:-0.03em; text-transform:uppercase;
+  font-size:clamp(1rem,1.9vw,1.8rem); line-height:.95;
+  opacity:var(--a); text-shadow:0 2px 22px rgba(12,11,10,.9);
+}
+/* Placement per step. Deliberately uneven: five evenly spaced frames is a
+   carousel, and the eye stops reading a carousel after the second one.
+   z-index ascends with arrival order, so a new frame always lands on top of
+   the one it is replacing; --blur and --dim grade the distance behind. */
+/* --dim stays MUCH lower than it wants to be. These are dark screenshots on a
+   near-black page, and blurring one already drops its apparent contrast: the
+   first pass also took them to 38-58% opacity and they did not recede, they
+   vanished, which loses the one thing five overlapping frames are there to say.
+   The blur carries the depth. The dim only needs to break the tie. */
+.prac__step--1{ left:0;   top:1%;   width:33%; z-index:1; --blur:7px;   --dim:.45; }
+.prac__step--2{ right:3%; top:0;    width:29%; z-index:2; --blur:6px;   --dim:.36; }
+.prac__step--3{ left:23%; top:33%;  width:38%; z-index:3; --blur:5px;   --dim:.28; }
+.prac__step--4{ right:0;  top:41%;  width:31%; z-index:4; --blur:3.5px; --dim:.18; }
+/* The last one arrives and stays in focus: nothing follows it. */
+.prac__step--5{ left:5%;  bottom:0; width:35%; z-index:5; }
+
+/* ==========================================================================
+   13 · SCENE 07 — LOCAL
+   The architecture, drawn as a technical artifact rather than written as a
+   list of features.
+   ========================================================================== */
+.local{
+  display:grid; grid-template-columns:minmax(0,.5fr) minmax(0,.5fr);
+  gap:clamp(24px,5vw,80px); align-items:center;
+}
+.arch__row{
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto;
+  gap:var(--s-4); align-items:baseline;
+  padding-block:11px; border-bottom:1px solid var(--hairline);
+  opacity:var(--a);
+  transform:translate3d(calc((1 - var(--a)) * -14px), 0, 0);
+}
+.arch__row:first-child{ border-top:1px solid var(--hairline); }
+.arch__k{ font-family:var(--font-mono); font-size:10px;
+          letter-spacing:var(--track-micro); text-transform:uppercase;
+          color:var(--text-primary); }
+.arch__v{ font-size:var(--t-small); color:var(--text-secondary); }
+.arch__p{ font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary);
+          white-space:nowrap; }
+.arch__row--out .arch__k{ color:var(--orchid); }
+
+/* ==========================================================================
+   14 · SCENE 08 — DOWNLOAD
+   An installation panel, not a pricing table.
+   ========================================================================== */
+.dlg{
+  display:grid; grid-template-columns:minmax(0,.5fr) minmax(0,.5fr);
+  gap:clamp(24px,5vw,80px); align-items:end;
+}
+.dl__row{
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto auto;
+  gap:var(--s-4); align-items:baseline;
+  padding-block:13px; border-bottom:1px solid var(--hairline);
+  transition:background var(--dur-fast);
+}
+.dl__row:first-child{ border-top:1px solid var(--hairline); }
+.dl__row:hover{ background:var(--accent-wash); }
+.dl__i{ font-family:var(--font-mono); font-size:9px; color:var(--orchid);
+        letter-spacing:var(--track-micro); }
+.dl__n{ font-size:.95rem; font-weight:600; letter-spacing:-0.01em; }
+.dl__m{ font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+        text-transform:uppercase; color:var(--text-tertiary); }
+.dl__go{ font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+         text-transform:uppercase; color:var(--text-secondary); }
+.dl__row:hover .dl__go{ color:var(--orchid); }
+.dl__cta{ margin-top:var(--s-6); }
+.dl__cta .btn{ font-size:1rem; padding:15px 26px; }
+
+/* ==========================================================================
+   15 · SCENE 09 — THE END
+   ========================================================================== */
+.end__row{ margin-top:var(--s-7); display:flex; gap:var(--s-4);
+           align-items:center; flex-wrap:wrap; }
+.end__foot{
+  position:absolute; left:var(--gutter); right:var(--gutter); bottom:46px;
+  display:flex; justify-content:space-between; gap:var(--s-5); flex-wrap:wrap;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-tertiary);
+}
+.end__foot nav{ display:flex; gap:var(--s-5); flex-wrap:wrap; }
+.end__foot a:hover{ color:var(--orchid); }
+
+/* ==========================================================================
+   16 · FAQ — native <details>, used inside the download scene. No JavaScript:
+   the element already does open/close, keyboard, and announces its own state.
+   ========================================================================== */
+.faq__i{ border-bottom:1px solid var(--hairline); }
+.faq__q{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--s-4);
+  padding-block:11px; cursor:pointer; list-style:none;
+  font-size:var(--t-small); font-weight:600; color:var(--text-primary);
+}
+.faq__q::-webkit-details-marker{ display:none; }
+.faq__q:hover{ color:var(--orchid); }
+.faq__q i{ font-family:var(--font-mono); font-style:normal; font-size:10px;
+           color:var(--orchid); }
+.faq__i[open] .faq__q i{ opacity:.5; }
+.faq__a{ padding-bottom:12px; font-size:var(--t-small); line-height:1.6;
+         color:var(--text-secondary); max-width:60ch; }
+
+/* ==========================================================================
+   17 · INSTRUMENTS — only ever on screen with ?fps
+   ========================================================================== */
+.fpsbox{
+  position:fixed; right:10px; bottom:34px; z-index:10001;
+  font-family:var(--font-mono); font-size:10px; line-height:1.7;
+  color:var(--text-primary); background:rgba(12,11,10,.94);
+  border:1px solid var(--hairline-lit); padding:8px 11px;
+  pointer-events:none; min-width:148px;
+}
+.fpsbox b{ color:var(--orchid); font-size:13px; }
+.fpsbox i{ display:block; margin-top:4px; color:var(--text-tertiary);
+           font-style:normal; max-width:190px; }
+
+/* ==========================================================================
+   18 · SHORT VIEWPORTS
+
+   HEIGHT IS A FIRST-CLASS BREAKPOINT HERE, and it is the one most sites never
+   need. A pinned scene is exactly one viewport, so the same composition is
+   comfortable at 1907x907 and overflows at 1366x640 — and no width query can
+   see the difference, because the width did not change.
+
+   `align-items:safe center` on the pin guarantees the overflow can never go
+   UPWARD into the masthead. What is left is the bottom edge, and the fix for
+   that is not to clip it but to make the composition genuinely shorter.
+
+   BECAUSE EVERY SCENE READS TOKENS, most of this is done by redefining the
+   tokens rather than by patching nine layouts. The spacing ladder tightens,
+   the display ceilings come down, and the scenes that carry a capture crop it
+   harder — a 3:1 screenshot becomes 4:1 rather than disappearing.
+   ========================================================================== */
+@media (max-height:820px){
+  :root{ --s-5:20px; --s-6:26px; --s-7:36px; --s-8:48px; --s-9:64px; }
+  .scene__pin{
+    padding-top:calc(var(--header-h) + var(--s-3));
+    padding-bottom:calc(26px + var(--s-3));
+  }
+  .prob__stage{ min-height:54vh; }
+  .pipe__feed{ height:48vh; }
+  .prac{ height:64vh; }
+  .pipe__stages{ gap:var(--s-3); }
+  .arch__row,.dl__row{ padding-block:9px; }
+}
+
+@media (max-height:780px){
+  .t-mega{ font-size:clamp(2.2rem, 6vw, 5.6rem); }
+  .t-big{ font-size:clamp(1.6rem, 3.8vw, 3.2rem); }
+  .hero .t-mega{ font-size:clamp(2rem, 5.4vw, 4.8rem); }
+  .hero .t-big{ font-size:clamp(1.4rem, 3vw, 2.7rem); }
+  .diff .t-big{ font-size:clamp(1.5rem, 3.4vw, 2.9rem); }
+  .t-read{ font-size:1rem; }
+  .diff__shot .shot{ aspect-ratio:4 / 1; }
+  .diff__engine{ padding-top:2vh; }
+  .hero__cta,.hero__meta{ margin-top:var(--s-5); }
+  /* 1280x720 is the commonest laptop there is, and the pipeline scene — five
+     stages, five glosses and a row of counters — was the one that missed it. */
+  .pipe__feed{ height:42vh; }
+  .pipe__stages{ gap:var(--s-3); }
+  .pipe__b{ font-size:12px; line-height:1.42; }
+}
+
+@media (max-height:700px){
+  :root{ --s-5:16px; --s-6:20px; --s-7:28px; --s-8:36px; }
+  .scene__pin{
+    padding-top:calc(var(--header-h) + var(--s-2));
+    padding-bottom:calc(26px + var(--s-2));
+  }
+  .t-mega{ font-size:clamp(2rem, 5vw, 4.4rem); }
+  .t-big{ font-size:clamp(1.5rem, 3.2vw, 2.7rem); }
+  .hero .t-mega{ font-size:clamp(1.9rem, 4.8vw, 4rem); }
+  .hero .t-big{ font-size:clamp(1.3rem, 2.6vw, 2.2rem); }
+  .diff .t-big{ font-size:clamp(1.4rem, 3vw, 2.4rem); }
+  .t-read,.t-note{ font-size:.9rem; line-height:1.45; }
+  /* NOT SHORTER THAN THE TIER ABOVE, which looks like a mistake and is not.
+     The cross-fading layers are three absolutely positioned boxes, so they
+     contribute nothing to the stage's intrinsic height and the min-height IS
+     the height available to them. Scene 02 now carries a heading over the
+     counters as well, and at 46vh the centred payoff had more height than the
+     box it was centred in and spilled out of both ends of it. The pin has the
+     room; the stage simply was not asking for it. */
+  .prob__stage{ min-height:54vh; }
+  .prob__count{ margin-top:var(--s-4); }
+  .prob__count-k{ margin-bottom:var(--s-3); padding-bottom:var(--s-2); }
+  .prob__gloss{ margin-top:var(--s-3); }
+  .pipe__feed{ height:40vh; }
+  .prac{ height:56vh; }
+  .board{ --sq:clamp(16px,1.4vw,21px); }
+  .met__v{ font-size:clamp(1.3rem,2.6vw,2rem); }
+  .pipe__b{ display:none; }        /* the stage NAMES survive; the gloss does not */
+  /* A 16:10 capture at 74% of a 1366 page is 580px tall, which is more than a
+     640px viewport has left after the chrome. Cropping it wider keeps the
+     screenshot as the centre of the composition instead of dropping it. */
+  .rep__shot .shot{ aspect-ratio:2 / 1; }
+  .rep__shot{ width:min(82%, 960px); }
+  .arch__row,.dl__row{ padding-block:7px; }
+  .faq__q{ padding-block:8px; }
+  .dl__cta .btn{ font-size:.9rem; padding:12px 20px; }
+}
+
+/* Below this there is no rhythm left to take away. The scene scrolls inside
+   itself rather than hiding its own last line under the strip: a scrollbar
+   inside a virtual scroll is a poor experience, and a composition whose
+   closing line is unreachable is a broken one. */
+@media (max-height:560px){
+  .scene__pin{ align-items:flex-start; overflow-y:auto; }
+}

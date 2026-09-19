@@ -1,0 +1,228 @@
+/* ==========================================================================
+   mobile.css — the narrow builds.
+
+   THIS IS NOT THE DESKTOP LAYOUT MADE NARROW. The desktop page is a fixed
+   viewport with a virtual scroll and nine pinned, scrubbed scenes. None of
+   that is right on a phone: the compositions assume a wide canvas, and the
+   virtual scroll fights the browser's own.
+
+   So the phone gets a different build of the same narrative:
+
+     native scroll     the document scrolls, because the platform is better at
+                       it than we are
+     stacked scenes    one column, in reading order, auto height
+     no scrubbing      the choreography that --p drives on desktop is replaced
+                       by one entrance per element, from js/reveal.js
+     everything else   the palette, the type scale, the captures, the boards,
+                       the copy and the tone all survive
+
+   LOADED LAST, and that is the point: every rule here overrides one in
+   site.css at equal specificity, so load order is what makes the phone layout
+   win. Deleting the <link> leaves the desktop site untouched.
+
+   THE BREAKPOINT IS WRITTEN DOWN EXACTLY ONCE, in the 760px query below. A
+   media query cannot take a custom property, so CSS owns it; the pre-paint
+   switch and js/boot.js read --build instead of repeating the number.
+   ========================================================================== */
+
+/* ==========================================================================
+   TABLET — same runtime, fewer columns and a shorter measure.
+   ========================================================================== */
+@media (max-width:1080px){
+  .hero{ grid-template-columns:minmax(0,1fr); gap:var(--s-6); }
+  .hero__shot{ display:none; }      /* the capture needs width to read at all */
+  .diff,.pipe,.local,.dlg{ grid-template-columns:minmax(0,1fr); gap:var(--s-6); }
+  .pipe__feed{ height:34vh; }
+  .rep__shot{ width:100%; }
+  .rep__say{ position:static; max-width:none; margin-top:var(--s-5); }
+  .rep__frags{ position:static; margin-bottom:var(--s-5);
+               grid-auto-flow:column; justify-content:start; gap:var(--s-6); }
+  .rail__tick b{ display:none; }
+  .rail{ padding-right:12px; }
+}
+
+@media (max-width:900px){
+  .prac__step{ position:static; width:100%; filter:none; transform:none; }
+  .prac__word{ position:static; }
+  .prac{ height:auto; display:grid; gap:var(--s-5); }
+}
+
+/* ==========================================================================
+   THE PHONE BUILD
+   ========================================================================== */
+@media (max-width:760px){
+
+  /* THE ONLY PLACE THE BREAKPOINT IS WRITTEN DOWN. The query above is the
+     authority; this line is how JavaScript finds out what it decided. */
+  :root{
+    --build:mobile;
+    --header-h:52px;
+    --gutter:20px;
+  }
+
+  /* ---- give the document back to the browser --------------------------- */
+  html,body{ height:auto; overflow:visible; overflow-x:hidden; }
+
+  .stage{ position:static; inset:auto; overflow:visible; pointer-events:auto; }
+  .track{ transform:none; will-change:auto; }
+
+  .scene{
+    /* js/scroll.js never mounts here, so no inline height was written and
+       none needs undoing. A scene is a section again. */
+    height:auto !important;
+    content-visibility:visible !important;
+  }
+  .scene__pin{
+    position:static; height:auto; display:block;
+    transform:none !important; will-change:auto;
+    padding-block:var(--s-8);
+  }
+  .scene:first-child .scene__pin{ padding-top:calc(var(--header-h) + var(--s-7)); }
+  .scene + .scene .scene__pin{ border-top:1px solid var(--hairline); }
+  .scene__in,.scene__in--wide{ max-width:none; }
+
+  /* THE SCRUB IS GONE, SO THE THINGS IT DROVE MUST BE ON.
+     Every .at element computes its opacity from --p, which only the
+     accumulator moves. Without this line the entire page is invisible on a
+     phone — which is exactly the failure the desktop build's own reveal
+     safety net exists to prevent, arriving from the other direction. */
+  .at{ --a:1; }
+  /* And the recede channel is pinned off. Nothing drives --p here, so --b
+     would resolve from an undefined variable and take the whole filter
+     declaration down with it; more to the point, the phone build stacks the
+     captures one under another instead of overlapping them, so there is no
+     depth to describe and nothing should be blurred. */
+  .rc{ --b:0; }
+  .at--out{ opacity:1; }
+  .hero__say,.hero__shot,.diff__shot,.rep__shot{ transform:none; opacity:1; }
+
+
+  /* ---- chrome ---------------------------------------------------------- */
+  .hdr{ mix-blend-mode:normal; background:var(--canvas-deep);
+        border-bottom:1px solid var(--hairline); }
+  .nav{ display:none; }
+  .burger{ display:inline-flex; }
+  .rail{ display:none; }
+  .hint{ display:none; }
+  .marks{ display:none; }
+  .strip{ display:none; }
+  /* No corner marks down here, so nothing to register against: the control
+     goes back to sizing from its own padding at the larger phone text size. */
+  .hdr__actions .btn{ height:auto; padding:7px 13px; font-size:.78rem; }
+
+  /* A menu that is open must not leave a scrollable page behind it. On
+     <html>, not on body: iOS Safari ignores overflow:hidden on body when a
+     scroll gesture is already in flight. */
+  html.is-menu-open,html.is-menu-open body{ overflow:hidden; }
+
+  /* ---- type ------------------------------------------------------------ */
+  .t-mega{ font-size:clamp(2.1rem,11vw,3.2rem); }
+  .t-big{ font-size:clamp(1.6rem,7.6vw,2.2rem); }
+  .t-read,.t-note{ max-width:none; }
+
+  /* ---- scene 02: the three states stack instead of overlaying ---------- */
+  .prob__stage{ min-height:0; display:grid; gap:var(--s-7); }
+  /* The cross-fade wrapper has no job down here - everything is already in
+     flow - so it steps out of the box tree and lets its three children become
+     grid items of .prob__stage directly. */
+  .prob__over{ display:contents; }
+  .prob__one,.prob__many,.prob__line,.prob__count{ position:static; inset:auto; }
+  .prob__line > div{ align-items:flex-start; }
+  .prob__gloss{ margin-inline:0; }
+  .prob__one{ align-items:flex-start; text-align:left; }
+  .prob__one .mvf{ justify-content:flex-start !important; }
+  .prob__many{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; }
+  /* Eighteen fragments is an accumulation on a wide screen and a wall on a
+     phone. Six still reads as "this keeps happening". */
+  /* +1 on every index: the column key is now the grid's first child. */
+  .prob__many .mvf:nth-child(n+8){ display:none; }
+  .prob__line{ justify-content:flex-start; text-align:left; }
+  .prob__counters{ justify-content:flex-start; gap:var(--s-5); flex-wrap:wrap; }
+  .met__sep{ display:none; }   /* wrapping turns a divider into a stray tick */
+
+  /* ---- scene 03 -------------------------------------------------------- */
+  .diff__engine{ padding-top:0; }
+
+  /* ---- scene 04 -------------------------------------------------------- */
+  .pipe__feed{ height:auto; mask-image:none; -webkit-mask-image:none; }
+  /* The column cannot visibly thin without the scrub, so it simply shows
+     what survives the filter rather than pretending to condense. */
+  .pipe__rows .mvf:not(.keeps){ display:none; }
+  .pipe__stages{ gap:var(--s-5); }
+
+  /* ---- scene 05 -------------------------------------------------------- */
+  .rep__shot{ width:100%; transform:none; }
+  .rep__frags{ grid-auto-flow:row; gap:var(--s-3); margin-bottom:var(--s-5); }
+
+  /* ---- scene 06 -------------------------------------------------------- */
+  .prac{ gap:var(--s-6); }
+  .prac__word{ font-size:1.1rem; margin-bottom:var(--s-2); }
+
+  /* ---- scene 08 -------------------------------------------------------- */
+  .dl__row{ grid-template-columns:auto minmax(0,1fr) auto; }
+  .dl__m{ grid-column:2; grid-row:2; }
+
+  /* ---- scene 09 -------------------------------------------------------- */
+  .end__foot{ position:static; margin-top:var(--s-8); flex-direction:column;
+              align-items:flex-start; gap:var(--s-3); }
+  .end__foot nav{ gap:var(--s-4); }
+
+  /* ---- captures --------------------------------------------------------
+     No bleeding and no tilt on a phone: a capture that runs off the edge of a
+     390px screen is a capture nobody can read, and a rotation eats the width
+     it needed. */
+  .shot--bleed-r{ margin-right:0; }
+  .shot--tilt,.shot--tilt-r{ transform:none; }
+  .shot--tall{ aspect-ratio:4 / 3; }
+
+  .board{ --sq:min(34px,9.6vw); }
+
+  /* ==========================================================================
+     THE REVEAL — phone only.
+
+     On the desktop build the scenes are choreographed against the scroll
+     accumulator, which is a better version of this idea and would fight an
+     IntersectionObserver doing it too. So js/reveal.js is in the MOBILE
+     allowlist and nowhere else, and its styles live here for the same reason.
+
+     The hidden state is gated on html.has-reveal, which the page head sets
+     and js/boot.js withdraws if the module did not mount: a broken reveal
+     must show everything, never nothing.
+     ====================================================================== */
+  html.has-reveal .rvl{
+    opacity:0;
+    transform:translateY(12px);
+    transition:opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
+    transition-delay:calc(var(--i,0) * 60ms);
+  }
+  html.has-reveal .rvl.is-in{ opacity:1; transform:none; }
+}
+
+/* ==========================================================================
+   ABOVE THE PHONE BUILD
+   Anything that must be undone when the desktop layout is forced onto a
+   narrow window with ?desktop lives here rather than as a default, so the two
+   builds never depend on each other's leftovers.
+   ========================================================================== */
+@media (min-width:761px){
+  .menu{ display:none !important; }
+}
+
+/* ==========================================================================
+   ACTUAL SMALL PHONES
+   ========================================================================== */
+@media (max-width:400px){
+  :root{ --gutter:16px; }
+  .brand span{ display:none; }
+  .t-mega{ font-size:clamp(1.9rem,11.5vw,2.5rem); }
+  .t-big{ font-size:clamp(1.45rem,8vw,1.9rem); }
+  .prob__many{ grid-template-columns:minmax(0,1fr); }
+  .prob__many .mvf:nth-child(n+6){ display:none; }
+  .prob__counters{ gap:var(--s-5); }
+  .met__v{ font-size:1.6rem; }
+  .menu__link{ font-size:1.6rem; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html.has-reveal .rvl{ opacity:1; transform:none; transition:none; }
+}

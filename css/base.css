@@ -1,0 +1,366 @@
+/* ==========================================================================
+   base.css — tokens, reset, primitives.
+
+   THIS FILE IS NOT ORIGINAL WORK AND MUST NOT BECOME ORIGINAL WORK.
+
+   Every token below is lifted from the Praxis Chess application's own
+   design system (frontend/src/index.css). The website and the product are
+   supposed to be indistinguishable, and the only way that survives contact
+   with a redesign is if the values have ONE source and this file is a copy
+   of it rather than an interpretation of it.
+
+   The system, in the application's own words: instrument-panel minimalism.
+   Warm near-black canvas, orchid accent, hairline geometry, frosted
+   surfaces. Zero blue anywhere.
+
+   THE ONE RULE THAT IS EASY TO BREAK
+   Orchid is a SIGNAL, not a colour. In the app it appears when Prax has
+   something for you and nowhere else. On this site the same discipline
+   applies: the one primary action per scene, one word per heading, and the
+   marked square on a board. The moment it becomes a decorative highlight,
+   the product's most distinctive idea stops being legible.
+   ========================================================================== */
+
+:root{
+
+  /* ---- SURFACES — warm neutral, hue-shifted to brown/graphite ---------- */
+  --canvas:        #121110;
+  --canvas-deep:   #0C0B0A;
+  --surface-1:     rgba(255,255,255,0.035);
+  --surface-2:     rgba(255,255,255,0.06);
+  --hairline:      rgba(255,255,255,0.08);
+  --hairline-lit:  rgba(231,166,214,0.28);
+
+  /* ---- TEXT ------------------------------------------------------------ */
+  --text-primary:   #F2EDEA;
+  --text-secondary: #A29B96;
+  --text-tertiary:  #6D6662;
+
+  /* ---- ACCENT ---------------------------------------------------------- */
+  --orchid:      #E7A6D6;
+  --mauve-deep:  #B0679F;
+  --accent-wash: rgba(231,166,214,0.12);
+
+  /* ---- SIGNAL — desaturated, filmic ------------------------------------
+     These are the app's severity scale and they mean the same things here.
+     They appear on measurements only. */
+  --gain:    #B9D96C;   /* win */
+  --warn:    #E5B04B;   /* mistake */
+  --loss:    #E2664A;   /* blunder */
+  --neutral: #8A847E;   /* draw */
+
+  /* ---- CHESSBOARD ------------------------------------------------------ */
+  --board-light: #E3DBD1;
+  --board-dark:  #4A4340;
+
+  /* ---- TYPE ------------------------------------------------------------
+     Two layers: families at the bottom, ROLES above. Every rule reads a
+     role. Identical stacks to the app, webfonts added — the app can assume
+     a local Inter Tight, a website cannot. */
+  --family-display:'Inter Tight','Archivo','Neue Haas Grotesk Display',
+                   'Segoe UI Variable Display',system-ui,-apple-system,sans-serif;
+  --family-mono:'JetBrains Mono','IBM Plex Mono','Cascadia Code',
+                Consolas,ui-monospace,SFMono-Regular,monospace;
+  --font-display:var(--family-display);
+  --font-mono:var(--family-mono);
+
+  /* Fluid, and bottoming out at phone sizes rather than scaling to nothing. */
+  --t-micro:10px;
+  --t-small:.8125rem;
+  --t-body:14px;
+  --t-lead:clamp(1rem,.94rem + .3vw,1.15rem);
+  --t-h3:clamp(1.15rem,1.05rem + .5vw,1.45rem);
+  --t-h2:clamp(1.6rem,1.25rem + 1.7vw,2.6rem);
+  --t-h1:clamp(2.1rem,1.4rem + 2.9vw,4rem);
+
+  --track-display:-0.02em;   /* the app's heading tracking, exactly */
+  --track-micro:0.14em;      /* the app's micro-label tracking, exactly */
+
+  /* ---- SPACE ----------------------------------------------------------- */
+  --s-1:4px;  --s-2:8px;  --s-3:12px; --s-4:16px; --s-5:24px;
+  --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+
+  --page-max:1180px;
+  --gutter:clamp(20px,4.4vw,56px);
+  --header-h:52px;           /* the app's nav is 52px. So is this one. */
+  /* The masthead's one solid control. Given an explicit height rather than
+     left to its padding, because the corner registration marks are derived
+     FROM it: --mark-inset below is the space left over above and below it,
+     which is what puts the tick's top edge and the button's top edge on one
+     line. Change this and the frame follows by itself. */
+  --ctl-h:32px;
+  --mark-inset:calc((var(--header-h) - var(--ctl-h)) / 2);   /* = 10px */
+
+  /* ---- SHAPE -----------------------------------------------------------
+     4px on cards, 3px on buttons, 2px on badges. The app is sharp-cornered
+     and that is most of why it reads as an instrument; anything rounder
+     immediately looks like a different product. */
+  --r-card:4px; --r-btn:3px; --r-badge:2px;
+
+  /* ---- MOTION ---------------------------------------------------------- */
+  --ease-out:cubic-bezier(.2,.8,.3,1);
+  --dur-fast:120ms;
+  --dur-base:220ms;
+
+  /* ---- WHICH BUILD IS LAID OUT ----------------------------------------
+     Read by the pre-paint switch in every page head and by js/boot.js. CSS
+     owns it because CSS is the only one of the three that cannot be told: a
+     media query cannot take a custom property, so the breakpoint literal
+     lives in css/mobile.css and everything else asks.
+
+     It matters more than it looks: below the breakpoint the document scrolls
+     natively and the accumulator is never constructed. Those are two
+     different runtimes, not two stylesheets. */
+  --build:desktop;
+
+  --z-ground:1;
+  --z-panes:10;
+  --z-header:100;
+  --z-menu:120;
+  --z-grain:9999;
+  --z-skip:10000;
+}
+
+/* ==========================================================================
+   RESET
+   ========================================================================== */
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  background:var(--canvas);
+  color:var(--text-primary);
+  font-family:var(--font-display);
+  font-size:var(--t-body);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+img,svg,canvas,video{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+ul,ol{ list-style:none; }
+hr{ border:none; border-top:1px solid var(--hairline); }
+
+::selection{ background:var(--accent-wash); color:var(--text-primary); }
+
+/* The app's scrollbar. Only visible in the mobile build and on any page that
+   scrolls natively, but it is part of the system either way. */
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-track{ background:var(--canvas-deep); }
+::-webkit-scrollbar-thumb{ background:#2A2624; border:3px solid var(--canvas-deep); }
+::-webkit-scrollbar-thumb:hover{ background:#3A3532; }
+
+/* ==========================================================================
+   TYPE PRIMITIVES
+   ========================================================================== */
+h1,h2,h3,h4{
+  font-family:var(--font-display);
+  font-weight:600;
+  letter-spacing:var(--track-display);
+  line-height:1.08;
+}
+
+/* Every numeral on the site is mono and tabular. The app does this so
+   figures in a column line up; here it is what keeps an evaluation, a move
+   number and a file size reading as measurements rather than as copy. */
+table,td,th,input,.mono,.stat-value,.num{
+  font-family:var(--font-mono);
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:'tnum' 1;
+}
+
+/* The app's section eyebrow, verbatim. */
+.micro-label{
+  font-family:var(--font-mono);
+  font-size:var(--t-micro);
+  text-transform:uppercase;
+  letter-spacing:var(--track-micro);
+  color:var(--text-tertiary);
+}
+.micro-label--lit{ color:var(--orchid); }
+
+.lead{
+  font-size:var(--t-lead);
+  line-height:1.55;
+  color:var(--text-secondary);
+  max-width:46ch;
+}
+.prose{ color:var(--text-secondary); max-width:58ch; }
+.prose strong{ color:var(--text-primary); font-weight:600; }
+.dim{ color:var(--text-tertiary); }
+
+code,.code{
+  font-family:var(--font-mono);
+  font-size:.86em;
+  color:var(--orchid);
+}
+
+/* ==========================================================================
+   LINKS AND BUTTONS — the app's, exactly.
+   Ghost by default; .solid is reserved for the single primary action on a
+   screen. Two styles, because a third is how a page stops having a primary.
+   ========================================================================== */
+.link{
+  color:var(--orchid);
+  border-bottom:1px solid transparent;
+  transition:color var(--dur-fast), border-color var(--dur-fast);
+}
+.link:hover{ color:var(--mauve-deep); border-bottom-color:var(--hairline-lit); }
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--s-2);
+  background:transparent;
+  color:var(--orchid);
+  border:1px solid var(--hairline-lit);
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:.82rem;
+  letter-spacing:-0.01em;
+  padding:8px 16px;
+  border-radius:var(--r-btn);
+  white-space:nowrap;
+  transition:background var(--dur-fast), border-color var(--dur-fast),
+             color var(--dur-fast);
+}
+.btn:hover{ background:var(--accent-wash); border-color:var(--orchid); }
+
+.btn--solid{
+  background:var(--orchid);
+  color:var(--canvas);
+  border-color:var(--orchid);
+}
+.btn--solid:hover{ background:var(--mauve-deep); border-color:var(--mauve-deep); }
+
+.btn--quiet{
+  color:var(--text-secondary);
+  border-color:var(--hairline);
+}
+.btn--quiet:hover{
+  background:rgba(255,255,255,.045);
+  border-color:rgba(255,255,255,.16);
+  color:var(--text-primary);
+}
+.btn--wide{ width:100%; }
+
+/* ==========================================================================
+   CARD — frosted mineral scrim, sharp corners, registration crosshair.
+
+   The crosshair is the app's signature and it is worth understanding before
+   anybody removes it: it is a printer's registration mark, which is what
+   makes a panel read as an instrument face rather than as a div. It costs
+   one pseudo-element and no markup.
+   ========================================================================== */
+.card{
+  position:relative;
+  background:var(--surface-1);
+  backdrop-filter:blur(18px) saturate(115%);
+  -webkit-backdrop-filter:blur(18px) saturate(115%);
+  border:1px solid var(--hairline);
+  border-radius:var(--r-card);
+  padding:20px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.card::after{
+  content:'';
+  position:absolute; top:9px; right:9px;
+  width:7px; height:7px;
+  opacity:.4; pointer-events:none;
+  background-image:
+    linear-gradient(var(--text-tertiary),var(--text-tertiary)),
+    linear-gradient(var(--text-tertiary),var(--text-tertiary));
+  background-size:7px 1px, 1px 7px;
+  background-position:center, center;
+  background-repeat:no-repeat;
+}
+.card--no-mark::after{ display:none; }
+.card--lit{ border-color:var(--hairline-lit); }
+
+/* ==========================================================================
+   BADGES — squared, 1px coloured border, 10% tinted fill. The app's set.
+   ========================================================================== */
+.badge{
+  display:inline-block;
+  font-family:var(--font-mono);
+  font-size:.65rem;
+  font-weight:500;
+  padding:2px 7px;
+  border-radius:var(--r-badge);
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  border:1px solid transparent;
+  color:var(--text-tertiary);
+  border-color:var(--hairline);
+  white-space:nowrap;
+}
+.badge-blunder   { background:rgba(226,102,74,.10);  color:var(--loss);    border-color:rgba(226,102,74,.45); }
+.badge-mistake   { background:rgba(229,176,75,.10);  color:var(--warn);    border-color:rgba(229,176,75,.45); }
+.badge-inaccuracy{ background:var(--accent-wash);    color:var(--orchid);  border-color:var(--hairline-lit); }
+.badge-win       { background:rgba(185,217,108,.10); color:var(--gain);    border-color:rgba(185,217,108,.45); }
+.badge-loss      { background:rgba(226,102,74,.10);  color:var(--loss);    border-color:rgba(226,102,74,.45); }
+.badge-draw      { background:rgba(138,132,126,.10); color:var(--neutral); border-color:rgba(138,132,126,.40); }
+.badge-orchid    { background:var(--accent-wash);    color:var(--orchid);  border-color:var(--hairline-lit); }
+
+/* ==========================================================================
+   TABLES — hairline separators, no zebra. The app's.
+   ========================================================================== */
+table{ border-collapse:collapse; width:100%; }
+thead th{
+  font-family:var(--font-mono);
+  font-size:var(--t-micro);
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:var(--track-micro);
+  color:var(--text-tertiary);
+  border-bottom:1px solid var(--hairline);
+  padding:8px 10px;
+  text-align:left;
+}
+tbody tr{ border-bottom:1px solid var(--hairline); transition:background var(--dur-fast); }
+tbody tr:hover{ background:var(--accent-wash); }
+tbody td{ padding:9px 10px; color:var(--text-secondary); }
+tbody td:first-child{ color:var(--text-primary); }
+
+/* ==========================================================================
+   GRAIN — the app's, at the app's opacity. It is what makes the frosted
+   surfaces read as material rather than as CSS opacity.
+   ========================================================================== */
+.grain{
+  position:fixed; inset:0; z-index:var(--z-grain);
+  pointer-events:none; opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ==========================================================================
+   ACCESSIBILITY
+   ========================================================================== */
+:focus-visible{ outline:1px solid var(--orchid); outline-offset:2px; }
+:focus:not(:focus-visible){ outline:none; }
+
+.vh{
+  position:absolute !important; width:1px; height:1px;
+  margin:-1px; padding:0; overflow:hidden; white-space:nowrap;
+  clip:rect(0 0 0 0); clip-path:inset(50%); border:0;
+}
+
+.skip{
+  position:fixed; left:12px; top:-64px; z-index:var(--z-skip);
+  font-family:var(--font-mono); font-size:var(--t-micro); font-weight:700;
+  letter-spacing:var(--track-micro); text-transform:uppercase;
+  background:var(--orchid); color:var(--canvas); padding:10px 16px;
+  border-radius:var(--r-btn);
+  transition:top var(--dur-fast) var(--ease-out);
+}
+.skip:focus{ top:12px; }
+#main:focus{ outline:none; }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}

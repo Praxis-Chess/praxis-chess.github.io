@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Nothing here · Praxis Chess</title>
+<meta name="robots" content="noindex" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#121110" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+<!-- SELF-CONTAINED ON PURPOSE. No stylesheet, no script, no webfont request.
+     A 404 is the one page that has to render when something about the deploy
+     is wrong, and every external file it depends on is one more thing that can
+     be the reason somebody is looking at it. That is also why tools/shell.py
+     skips it: the shared chrome would bring the shared dependencies with it.
+
+     The palette is therefore duplicated here, and that is the trade — a page
+     that always renders, against one colour block that has to be kept in step
+     with css/base.css by hand. -->
+<style>
+  :root{
+    --canvas:#121110; --canvas-deep:#0C0B0A;
+    --text-primary:#F2EDEA; --text-secondary:#A29B96; --text-tertiary:#6D6662;
+    --orchid:#E7A6D6; --mauve-deep:#B0679F;
+    --hairline:rgba(255,255,255,.08);
+    --board-light:#E3DBD1; --board-dark:#4A4340;
+    --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+    --sans:'Inter Tight','Segoe UI Variable Display',system-ui,-apple-system,sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ min-height:100%; background:var(--canvas); color:var(--text-primary); }
+  body{ font-family:var(--sans); -webkit-font-smoothing:antialiased;
+        font-size:14px; line-height:1.5; }
+
+  main{ min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+        gap:28px; padding:48px clamp(20px,6vw,64px);
+        max-width:1080px; margin-inline:auto; }
+  .m{ font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+      text-transform:uppercase; color:var(--text-tertiary); }
+  .m b{ color:var(--orchid); font-weight:500; }
+  h1{ font-weight:600; letter-spacing:-.02em; line-height:1.04;
+      font-size:clamp(2rem,7vw,3.6rem); }
+  h1 em{ font-style:normal; color:var(--orchid); }
+  p.lead{ font-size:clamp(1rem,.95rem + .3vw,1.15rem); line-height:1.55;
+          color:var(--text-secondary); max-width:44ch; }
+
+  /* An 8x8 board as ONE element. The gradient stops land on eighths, so the
+     squares are exact at every width — no 64 divs and no script. */
+  .board{ width:min(230px,50vw); aspect-ratio:1; border-radius:4px;
+          box-shadow:0 0 0 1px var(--hairline);
+          background-color:var(--board-dark);
+          background-image:
+            linear-gradient(45deg,var(--board-light) 25%,transparent 25%,transparent 75%,var(--board-light) 75%),
+            linear-gradient(45deg,var(--board-light) 25%,transparent 25%,transparent 75%,var(--board-light) 75%);
+          background-size:25% 25%; background-position:0 0, 12.5% 12.5%;
+          position:relative; }
+  .board::after{ content:''; position:absolute; left:50%; top:25%;
+                 width:12.5%; height:12.5%;
+                 border:1.5px solid var(--orchid); border-radius:2px;
+                 background:rgba(231,166,214,.22); }
+
+  nav{ display:flex; gap:12px; flex-wrap:wrap; }
+  a.btn{ font-family:var(--sans); font-weight:600; font-size:.82rem;
+         letter-spacing:-.01em; padding:8px 16px; border-radius:3px;
+         text-decoration:none; border:1px solid transparent; display:inline-block; }
+  a.solid{ background:var(--orchid); color:var(--canvas); border-color:var(--orchid); }
+  a.solid:hover{ background:var(--mauve-deep); border-color:var(--mauve-deep); }
+  a.ghost{ color:var(--text-secondary); border-color:var(--hairline); }
+  a.ghost:hover{ color:var(--text-primary); border-color:rgba(255,255,255,.16); }
+  a:focus-visible{ outline:1px solid var(--orchid); outline-offset:2px; }
+
+  .row{ display:flex; gap:clamp(24px,5vw,64px); align-items:center; flex-wrap:wrap; }
+  .col{ display:flex; flex-direction:column; gap:22px; flex:1 1 360px; }
+  @media (max-width:640px){ .board{ order:-1; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="m">PRAXIS <span style="color:#6D6662">//</span> <b>404</b></p>
+
+  <div class="row">
+    <div class="col">
+      <h1>That square is <em>empty</em>.</h1>
+      <p class="lead">The address resolved and the page did not. Nothing was
+        analysed and nothing was lost. The rest of the site is where you left it.</p>
+      <nav>
+        <a class="btn solid" href="/">Back to the board</a>
+        <a class="btn ghost" href="/download">Download Praxis</a>
+      </nav>
+    </div>
+    <div class="board" role="img" aria-label="An empty chessboard with one square outlined."></div>
+  </div>
+
+  <p class="m">PRAXIS CHESS <span style="color:#6D6662">//</span> LOCAL-FIRST GAME ANALYSIS</p>
+</main>
+</body>
+</html>

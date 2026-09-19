@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "praxis-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "serve.py"
+      ],
+      "port": 5500
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Cloudflare Pages / Netlify. Vercel reads the "redirects" block in
+# vercel.json instead; each host ignores the other's file.
+#
+# The site used to be three documents and is now one narrative page. These two
+# addresses were linked and indexed, so they keep resolving — as a real 308 at
+# the edge rather than as an HTML bounce, which is faster and is what a
+# crawler wants to see.
+/pipeline   /#pipeline   308
+/download   /#download   308

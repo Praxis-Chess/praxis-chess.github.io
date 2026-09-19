@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ONE PAGE. The site is a single narrative document; /pipeline and
+     /download are 308 redirects into it (see vercel.json and _redirects) and
+     carry noindex plus a canonical pointing here, so they are deliberately
+     not listed.
+
+     tools/check.py fails the build when a real page exists that is not listed
+     here, or when an entry here has no page behind it. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://praxischess.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
