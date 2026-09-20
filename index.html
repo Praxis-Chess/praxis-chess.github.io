@@ -152,8 +152,9 @@
                      crooked, not that it was placed. The tilt stays in scene
                      06, where several frames overlap and the scatter is the
                      composition. -->
-                <figure class="shot shot--bleed-r" data-shot="report"
-                        data-focus="50% 30%"
+                <figure class="shot shot--crop" data-shot="report"
+                        data-focus="85% 47%"
+                        style="--shot-zoom:1.68;--shot-origin:85% 47%"
                         data-alt="Praxis game analysis: a game's mistakes listed with severity, the engine's better move and a written explanation."></figure>
               </div>
             </div>
@@ -187,9 +188,25 @@
               <!-- (a) one move, alone -->
               <div class="prob__one at at--out" style="--s0:.13;--inv:6">
                 <p class="micro-label">Game 412 <span class="dim2">//</span> blitz 5+0 <span class="dim2">//</span> move 5</p>
-                <p class="t-big" style="margin-top:var(--s-3)">Nxd5</p>
-                <p class="mvf mvf--lg" style="justify-content:center;margin-top:var(--s-3)">
-                  <i>eval</i><b>+0.1 → −2.3</b><s>blunder</s><i>0.7s left</i>
+                <!-- THE HEADLINE IS THE CONSEQUENCE, NOT THE NOTATION.
+                     This used to be the word `Nxd5` set at display size, which
+                     is the single most important line in the scene and is
+                     unreadable to anyone who has not played chess seriously:
+                     it is a piece, a capture and a square compressed into four
+                     characters. A visitor who does not decode it is told
+                     nothing at all, and this is the beat the whole section is
+                     built on.
+
+                     So the sentence gets the scale and the notation moves
+                     underneath it. Nothing is lost by that - the move, the
+                     evaluation swing, the severity and the clock are all still
+                     on screen, in the monospace the rest of the page uses for
+                     instrument readings. It reads the way the product works:
+                     the engine hands you `Nxd5 -2.3`, and the plain meaning of
+                     that is what you actually needed. -->
+                <p class="t-big prob__said" style="margin-top:var(--s-3)">You just lost a piece.</p>
+                <p class="mvf mvf--lg" style="justify-content:center;margin-top:var(--s-4)">
+                  <b>Nxd5</b><i>eval</i><b>+0.1 → −2.3</b><s>blunder</s><i>0.7s left</i>
                 </p>
                 <p class="t-note" style="margin-top:var(--s-4);max-width:34ch">
                   An engine can tell you this move was wrong. It is right, it is

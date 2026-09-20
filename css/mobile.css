@@ -172,6 +172,13 @@
      390px screen is a capture nobody can read, and a rotation eats the width
      it needed. */
   .shot--bleed-r{ margin-right:0; }
+  /* No zooming into a capture on a phone. .shot--crop scales the image up so
+     a region fills a wide desktop frame; at 335px the frame is already
+     narrower than the region, so the same zoom would show a corner of a
+     panel and nothing legible. The hero is the only slot using it and it is
+     display:none here anyway - this is so the next one that uses it does not
+     have to rediscover why. */
+  .shot--crop .shot__img{ transform:none; }
   .shot--tilt,.shot--tilt-r{ transform:none; }
   .shot--tall{ aspect-ratio:4 / 3; }
 

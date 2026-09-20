@@ -400,6 +400,40 @@ html.is-moved .hint{ opacity:0; }
 /* Treatments — composition, not decoration. Each exists because a particular
    scene needed the capture to behave a particular way. */
 .shot--bleed-r{ margin-right:calc((var(--gutter) + 6vw) * -1); }
+
+/* A capture shown CLOSER, inside a frame that stays on the page.
+
+   object-fit:cover already crops to the frame's aspect ratio, but only ever
+   at the scale that just covers it - a 1920px capture in a 590px frame ends
+   up at roughly a third size, and an interface rendered at a third size is a
+   grey texture, not a screenshot. This scales the image up inside its own
+   frame so a chosen region fills it at a legible size.
+
+   --shot-origin is the point that stays put while it scales, so it doubles as
+   the focal point; give the slot the same value in data-focus and the two
+   agree on which part of the capture survives. .shot is already
+   overflow:hidden, so nothing escapes the frame.
+
+   THE ORIGIN IS NOT FREE, AND THE ARITHMETIC MATTERS. Scaling about origin o
+   leaves the fraction [o - o/z, o + (1-o)/z] of the image visible, so the
+   leftmost point you can reach is o(1 - 1/z), maximised at o = 100%. To crop
+   PAST a feature you have to zoom hard enough that 1 - 1/z clears it: the
+   hero has to start after the board at 0.37, which needs z >= 1.6 whatever the
+   origin is. Choosing the origin first and then wondering why the crop will
+   not move is how this gets fiddled with for an hour.
+
+   Solve it the other way round. Measure the region you want in the capture,
+   turn it into fractions, then read z and o straight off:
+
+       z = 1 / (right - left)          o = left / (1 - 1/z)
+
+   The hero's mistake cards occupy x 677..1780 of a 1920-wide capture, so the
+   band is 0.344..0.938 with a little air either side, which is z = 1.68 and
+   o = 85%. Both edges of every card survive; nothing is sliced through. */
+.shot--crop .shot__img{
+  transform:scale(var(--shot-zoom, 1.4));
+  transform-origin:var(--shot-origin, 50% 50%);
+}
 .shot--tilt{ transform:rotate(-1.3deg); }
 .shot--tilt-r{ transform:rotate(1deg); }
 .shot--wide{ aspect-ratio:16 / 10; }
@@ -538,7 +572,20 @@ html.is-moved .hint{ opacity:0; }
   position:relative; z-index:1;
   transform:translate3d(0, calc(var(--p) * -21vh), 0);
 }
-.hero__shot .shot{ aspect-ratio:16 / 11; }
+/* ON THE PAGE, NOT OFF THE EDGE OF IT.
+
+   This frame used to carry shot--bleed-r, which pulled it a gutter plus 6vw
+   past the right margin so the capture ran out of the viewport. Bleeding an
+   image off the page is a real editorial device, but it only reads as one
+   when the crop looks chosen - and here it cut the application window
+   mid-panel, with no frame edge anywhere, so it read as a screenshot that had
+   been placed carelessly rather than as a photograph running off a spread.
+
+   Contained instead, with a visible right edge, and cropped deliberately into
+   the region worth showing: the mistake list, where the severity, the
+   engine's move and the written explanation are. That is the product's whole
+   argument, and it is now large enough to read. */
+.hero__shot .shot{ aspect-ratio:16 / 10; }
 
 /* ==========================================================================
    8 · SCENE 02 — THE PROBLEM
@@ -553,6 +600,15 @@ html.is-moved .hint{ opacity:0; }
   display:flex; flex-direction:column;
 }
 .prob__over{ position:relative; flex:1 1 auto; min-height:0; }
+/* The plain-English headline. Capped so it breaks into two short lines rather
+   than running the full width of a centred column, which is what makes a
+   sentence read as a statement instead of as a caption.
+
+   text-wrap:balance because the cap alone put "piece." alone on the second
+   line - a two-word orphan under six words reads as a mistake at display
+   size. Balance evens the two lines out and keeps doing so at every type
+   size the height tiers introduce, which hand-tuning the ch cap would not. */
+.prob__said{ max-width:16ch; text-wrap:balance; }
 .prob__one{
   position:absolute; inset:0;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
