@@ -8,7 +8,7 @@
      here, or when an entry here has no page behind it. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://praxischess.app/</loc>
+    <loc>https://praxis-chess.github.io/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

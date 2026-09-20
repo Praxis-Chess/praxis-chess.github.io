@@ -10,10 +10,25 @@ looks identical to a successful deploy of an empty site.
 
 ---
 
-## 1 · Before the first deploy: change the domain
+## 1 · The domain
 
-Four things carry `praxischess.app` and all four must agree, or the canonical
-points at a domain you do not own while the share preview 404s:
+The site is served from **<https://praxis-chess.github.io/>** — the
+`praxis-chess` organisation's GitHub Pages site, from the repository
+`praxis-chess/praxis-chess.github.io` on `main`, root folder.
+
+**The repository name is load-bearing.** Every path in this site is
+root-absolute: `/assets/app/report.webp`, `/#download`, and `BASE =
+'/assets/app/'` in `js/shots.js`. A repository named anything else would serve
+at `praxis-chess.github.io/<name>/`, where all of those resolve one level too
+high -- no logo, no favicons, none of the eight screenshots, every nav link a
+404. Naming it `<org>.github.io` is what puts the site at the domain root, and
+a custom domain would do the same. Renaming the repository breaks the site
+until those paths are made relative.
+
+### Changing it again
+
+Six places carry the origin and all six must agree, or the canonical points at
+a domain you do not own while the share preview 404s:
 
 | file | what to change |
 |---|---|
@@ -23,13 +38,14 @@ points at a domain you do not own while the share preview 404s:
 | `robots.txt` | the `Sitemap:` line |
 
 ```bash
-# From the repository root. Check the diff before committing.
-grep -rl 'praxischess.app' --include='*.html' --include='*.xml' --include='*.txt' .
+grep -rl 'praxis-chess.github.io' --include='*.html' --include='*.xml' --include='*.txt' .
 ```
 
-`tools/check.py` warns while the placeholder is still in place, fails if the
-pages ever disagree about the domain, and fails if `og:image` stops being an
-absolute URL. **Run it after the rename**, not before.
+`tools/check.py` reads the domain out of the pages rather than storing its own
+copy, so it follows a rename automatically. It fails if the pages ever
+disagree with each other, if the redirect stubs stop pointing at the real
+page, or if `og:image` stops being an absolute URL. **Run it after the
+rename.**
 
 ## 2 · Vercel
 
@@ -64,14 +80,32 @@ Check it after the first deploy by visiting `/pipeline` directly. A
 misconfigured host makes the links work and direct entry 404, which is the
 version nobody notices.
 
-## 4 · GitHub Pages
+## 4 · GitHub Pages — the current host
 
-Works, with caveats: Pages has no clean-URL rewriting and no redirect rules,
-so `/pipeline` and `/download` fall through to the HTML stubs — which is
-exactly what they are for, but the bounce is a round trip rather than a 308.
-`_headers`, `_redirects` and `vercel.json` are all ignored, so the security
-headers and cache policy are lost as well. Put it behind Cloudflare if any of
-that matters.
+Settings -> Pages -> Source: **Deploy from a branch**, branch `main`, folder
+`/ (root)`. First build takes a minute or two; after that every push to `main`
+republishes.
+
+`.nojekyll` is in the repository root and must stay there. Without it Pages
+runs the files through Jekyll, which skips anything beginning with an
+underscore -- and both `_headers` and `_redirects` start with one. It costs
+nothing and removes a whole class of "why is that file missing" bug.
+
+**What Pages does not do**, all of which this site survives:
+
+- **No redirect rules.** `/pipeline` and `/download` fall through to the HTML
+  stubs, which is exactly what they are for -- but the bounce is a round trip
+  rather than a 308 at the edge.
+- **No clean URLs.** Pages does resolve `/download` to `download.html`, so
+  this happens to work; confirm it by typing the address after the first
+  deploy rather than by clicking a link.
+- **No custom headers.** `_headers`, `_redirects` and `vercel.json` are all
+  ignored, so the CSP, HSTS, `X-Frame-Options` and the cache policy below are
+  not applied. The site has no forms, no user input and no backend, so nothing
+  is exposed by their absence -- but the defence in depth is gone. Put
+  Cloudflare in front, or move to Cloudflare Pages / Netlify / Vercel, if that
+  matters.
+
 
 ---
 

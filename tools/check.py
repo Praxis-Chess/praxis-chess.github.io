@@ -49,6 +49,13 @@ JS = sorted(f for f in os.listdir('js') if f.endswith('.js'))
 CSS = sorted(f for f in os.listdir('css') if f.endswith('.css'))
 HTML = {p: read(p) for p in PAGES}
 
+# The origin every page's canonical agrees on, filled in by check_meta().
+# Derived, never written down twice: the redirect stubs and the sitemap have
+# to point at whatever the real pages claim, and a literal here was already
+# wrong once -- it still said praxischess.app after the site moved to GitHub
+# Pages, which turned a correct rename into a failing build.
+CANON = {'origin': None}
+
 
 def strip_css_comments(s):
     return re.sub(r'/\*.*?\*/', '', s, flags=re.S)
@@ -398,9 +405,11 @@ def check_meta():
 
     if len(hosts) > 1:
         fail('pages disagree about the domain: %s' % ', '.join(sorted(hosts)))
-    elif hosts and 'praxischess.app' in hosts.pop():
-        warn('every canonical still says praxischess.app - change them if that '
-             'is not the domain you bought (see DEPLOY.md)')
+    elif hosts:
+        CANON['origin'] = hosts.pop()
+        if 'example.' in CANON['origin'] or 'localhost' in CANON['origin']:
+            warn('every canonical says %s - that is not a domain you can '
+                 'deploy to (see DEPLOY.md)' % CANON['origin'])
 
 
 # ---- 9 · the sitemap lists exactly the pages that exist --------------------
@@ -428,8 +437,10 @@ def check_sitemap():
         h = HTML.get(r, '')
         if 'noindex' not in h:
             fail('%s is a redirect stub with no noindex' % r)
-        if 'rel="canonical" href="https://praxischess.app/"' not in h:
-            fail('%s does not canonical to the narrative page' % r)
+        want = 'rel="canonical" href="%s/"' % (CANON['origin'] or '')
+        if not CANON['origin'] or want not in h:
+            fail('%s does not canonical to the narrative page at %s'
+                 % (r, CANON['origin'] or '(no domain found)'))
 
 
 # ---- 10 · every FEN on the site is renderable ------------------------------

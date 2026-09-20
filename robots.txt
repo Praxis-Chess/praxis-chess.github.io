@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://praxischess.app/sitemap.xml
+Sitemap: https://praxis-chess.github.io/sitemap.xml
