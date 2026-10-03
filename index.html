@@ -128,9 +128,13 @@
                      weight to a sentence the page exists to disagree with. -->
                 <h1 class="t-big dim2">The engine<br />finds the move.</h1>
                 <p class="t-mega hero__l2" style="margin-top:.12em">Praxis<br />finds the <span class="pink">pattern</span>.</p>
-                <p class="t-read" style="margin-top:var(--s-5)">
+                <p class="t-read m-cut" style="margin-top:var(--s-5)">
                   Your Chess.com games, evaluated by Stockfish and read back to you
                   in words, across every game you have played, not one at a time.
+                </p>
+                <p class="t-read m-only" hidden style="margin-top:var(--s-5)">
+                  Stockfish reads every game you have played. Praxis tells you
+                  what they keep saying.
                 </p>
                 <div class="hero__cta">
                   <a class="btn btn--solid" href="/#download">Download Praxis</a>
@@ -187,7 +191,7 @@
 
               <!-- (a) one move, alone -->
               <div class="prob__one at at--out" style="--s0:.13;--inv:6">
-                <p class="micro-label">Game 412 <span class="dim2">//</span> blitz 5+0 <span class="dim2">//</span> move 5</p>
+                <p class="micro-label m-cut">Game 412 <span class="dim2">//</span> blitz 5+0 <span class="dim2">//</span> move 5</p>
                 <!-- THE HEADLINE IS THE CONSEQUENCE, NOT THE NOTATION.
                      This used to be the word `Nxd5` set at display size, which
                      is the single most important line in the scene and is
@@ -208,7 +212,7 @@
                 <p class="mvf mvf--lg" style="justify-content:center;margin-top:var(--s-4)">
                   <b>Nxd5</b><i>eval</i><b>+0.1 → −2.3</b><s>blunder</s><i>0.7s left</i>
                 </p>
-                <p class="t-note" style="margin-top:var(--s-4);max-width:34ch">
+                <p class="t-note m-cut" style="margin-top:var(--s-4);max-width:34ch">
                   An engine can tell you this move was wrong. It is right, it is
                   instant, and by your next game you have forgotten it.
                 </p>
@@ -256,8 +260,8 @@
                        who does not yet know what a fork is reads it as noise,
                        and the whole scene was built to land on it. -->
                   <p class="t-note prob__gloss">
-                    A fork is one piece attacking two at once. Praxis found this by
-                    reading every game, not by looking at one.
+                    A fork is one piece attacking two at once.<span class="m-cut"> Praxis found this by
+                    reading every game, not by looking at one.</span>
                   </p>
                 </div>
               </div>
@@ -277,9 +281,10 @@
                    as two unrelated groups, whereas three dividers read as the
                    single rising progression this actually is. -->
               <div class="prob__count">
-                <p class="prob__count-k at at--fade" style="--s0:.24;--inv:14">
+                <p class="prob__count-k at at--fade m-cut" style="--s0:.24;--inv:14">
                   The more of your games it reads, the more often it finds the same mistake
                 </p>
+                <p class="prob__count-k m-only" hidden>One mistake, across your library</p>
                 <div class="prob__counters">
                   <span class="met at at--fade" style="--s0:.28;--inv:14">
                     <b class="met__v">1</b><span class="met__l">game read</span></span>
@@ -312,11 +317,11 @@
                   <p class="mvf at" style="--s0:.05;--inv:8"><i>05</i><b>Nxd5</b><s>−2.4</s></p>
                   <p class="mvf at" style="--s0:.09;--inv:8"><i>12</i><b>Re8</b><i>−0.2</i></p>
                   <p class="mvf at" style="--s0:.13;--inv:8"><i>19</i><b>h6</b><i>−0.4</i></p>
-                  <p class="mvf at" style="--s0:.17;--inv:8"><i>23</i><b>Ra8+</b><s>−1.6</s></p>
-                  <p class="mvf at" style="--s0:.21;--inv:8"><i>28</i><b>Kg7</b><i>−0.1</i></p>
-                  <p class="mvf at" style="--s0:.25;--inv:8"><i>34</i><b>Bd6</b><s>−9.1</s></p>
+                  <p class="mvf at m-cut" style="--s0:.17;--inv:8"><i>23</i><b>Ra8+</b><s>−1.6</s></p>
+                  <p class="mvf at m-cut" style="--s0:.21;--inv:8"><i>28</i><b>Kg7</b><i>−0.1</i></p>
+                  <p class="mvf at m-cut" style="--s0:.25;--inv:8"><i>34</i><b>Bd6</b><s>−9.1</s></p>
                 </div>
-                <p class="t-note" style="margin-top:var(--s-5)">
+                <p class="t-note m-cut" style="margin-top:var(--s-5)">
                   Correct, and finished with you the moment you close the tab. It
                   describes one move in one game.
                 </p>
@@ -329,10 +334,13 @@
                 <p class="t-big pink at at--rise" style="--s0:.26;--inv:3;margin-top:.08em">
                   Never why.
                 </p>
-                <p class="t-read at at--fade" style="--s0:.40;--inv:4;margin-top:var(--s-5)">
+                <p class="t-read at at--fade m-cut" style="--s0:.40;--inv:4;margin-top:var(--s-5)">
                   You do not lose games one move at a time. You lose them the same
                   way, over and over. Nobody counts, because counting means
                   holding every game you have played open at once.
+                </p>
+                <p class="t-read m-only" hidden style="margin-top:var(--s-5)">
+                  Counting means holding every game open at once.
                 </p>
                 <div class="diff__shot at at--fade" style="--s0:.44;--inv:3">
                   <figure class="shot shot--tilt-r shot--bleed-r" data-shot="patterns"
@@ -446,7 +454,7 @@
                    Prax is the answer to the question this whole scene is
                    about, so it belongs in the picture rather than in a
                    separate section of its own. -->
-              <div class="rep__ask at at--rise" style="--s0:.34;--inv:6;--rise:28px">
+              <div class="rep__ask at at--rise m-cut" style="--s0:.34;--inv:6;--rise:28px">
                 <figure class="shot shot--panel shot--tilt-r" data-shot="ask"
                         data-focus="50% 60%"
                         data-alt="Ask Prax: a question about the player's games answered with the evidence rows it was drawn from."></figure>
@@ -455,7 +463,7 @@
               <div class="rep__say at at--rise" style="--s0:.46;--inv:3;--rise:22px">
                 <p class="t-big">One mistake<br />is an accident.</p>
                 <p class="t-big pink" style="margin-top:.06em">Eleven is a habit.</p>
-                <p class="t-note" style="margin-top:var(--s-4)">
+                <p class="t-note m-cut" style="margin-top:var(--s-4)">
                   Ranked by what each pattern actually cost in evaluation, summed
                   across every occurrence, not by how often it happened.
                 </p>
@@ -475,35 +483,61 @@
             <p class="rule" style="margin-bottom:var(--s-5)"><span>06 / Analysis becomes practice</span></p>
 
             <div class="prac">
-              <div class="prac__step prac__step--1 at rc" style="--s0:.02;--inv:7;--r0:.18;--rinv:8">
-                <figure class="shot shot--panel shot--tilt" data-shot="today"
-                        data-alt="The Praxis Today screen: one focus for the session, drawn from the pattern report."></figure>
-              </div>
-              <p class="prac__word at" style="--s0:.05;--inv:7;left:36%;top:6%">Your games</p>
+              <!-- EACH CAPTURE AND ITS WORD ARE ONE CELL.
 
-              <div class="prac__step prac__step--2 at rc" style="--s0:.18;--inv:7;--r0:.36;--rinv:8">
-                <figure class="shot shot--tall" data-shot="patterns"
-                        data-alt="The Praxis Insights screen: recurring mistakes ranked by cost."></figure>
-              </div>
-              <p class="prac__word pink at" style="--s0:.22;--inv:7;right:34%;top:20%">Your weakness</p>
+                   On the desktop build these ten elements are absolutely
+                   positioned against .prac and deliberately overlap, so the
+                   pairing is made by where things sit. The phone stacks them,
+                   and a caption that reads as a caption on a wide canvas reads
+                   as an orphaned line underneath a picture on a narrow one -
+                   "Your weakness" floating between two screenshots belongs to
+                   neither of them.
 
-              <div class="prac__step prac__step--3 at rc" style="--s0:.36;--inv:7;--r0:.54;--rinv:8">
-                <figure class="shot shot--wide shot--tilt-r" data-shot="drill"
-                        data-alt="A Praxis drill in progress: a position from one of your own games, replayed."></figure>
+                   The wrapper is inert on desktop: it is position:static with
+                   no transform, filter or z-index, so it creates no stacking
+                   context and no containing block, and its absolutely
+                   positioned children still resolve against .prac exactly as
+                   before. It has zero flow height there. css/mobile.css turns
+                   it into a box. -->
+              <div class="prac__cell m-cut">
+                <div class="prac__step prac__step--1 at rc" style="--s0:.02;--inv:7;--r0:.18;--rinv:8">
+                  <figure class="shot shot--panel shot--tilt" data-shot="today"
+                          data-alt="The Praxis Today screen: one focus for the session, drawn from the pattern report."></figure>
+                </div>
+                <p class="prac__word at" style="--s0:.05;--inv:7;left:36%;top:6%">Your games</p>
               </div>
-              <p class="prac__word at" style="--s0:.40;--inv:7;left:3%;top:52%">Your drill</p>
 
-              <div class="prac__step prac__step--4 at rc" style="--s0:.54;--inv:7;--r0:.72;--rinv:8">
-                <figure class="shot shot--panel" data-shot="play"
-                        data-alt="Praxis Play and Improve: an opponent built from your own games."></figure>
+              <div class="prac__cell">
+                <div class="prac__step prac__step--2 at rc" style="--s0:.18;--inv:7;--r0:.36;--rinv:8">
+                  <figure class="shot shot--tall" data-shot="patterns"
+                          data-alt="The Praxis Insights screen: recurring mistakes ranked by cost."></figure>
+                </div>
+                <p class="prac__word pink at" style="--s0:.22;--inv:7;right:34%;top:20%">Your weakness</p>
               </div>
-              <p class="prac__word at" style="--s0:.58;--inv:7;right:33%;bottom:22%">Your next game</p>
 
-              <div class="prac__step prac__step--5 at" style="--s0:.72;--inv:7">
-                <figure class="shot shot--wide" data-shot="insights"
-                        data-alt="The Praxis Insights screen: a per-game accuracy trend with a ten-game rolling average, winning-position conversion, and the tactical motifs most often missed."></figure>
+              <div class="prac__cell">
+                <div class="prac__step prac__step--3 at rc" style="--s0:.36;--inv:7;--r0:.54;--rinv:8">
+                  <figure class="shot shot--wide shot--tilt-r" data-shot="drill"
+                          data-alt="A Praxis drill in progress: a position from one of your own games, replayed."></figure>
+                </div>
+                <p class="prac__word at" style="--s0:.40;--inv:7;left:3%;top:52%">Your drill</p>
               </div>
-              <p class="prac__word pink at" style="--s0:.76;--inv:7;left:46%;bottom:3%">Your improvement</p>
+
+              <div class="prac__cell m-cut">
+                <div class="prac__step prac__step--4 at rc" style="--s0:.54;--inv:7;--r0:.72;--rinv:8">
+                  <figure class="shot shot--panel" data-shot="play"
+                          data-alt="Praxis Play and Improve: an opponent built from your own games."></figure>
+                </div>
+                <p class="prac__word at" style="--s0:.58;--inv:7;right:33%;bottom:22%">Your next game</p>
+              </div>
+
+              <div class="prac__cell m-cut">
+                <div class="prac__step prac__step--5 at" style="--s0:.72;--inv:7">
+                  <figure class="shot shot--wide" data-shot="insights"
+                          data-alt="The Praxis Insights screen: a per-game accuracy trend with a ten-game rolling average, winning-position conversion, and the tactical motifs most often missed."></figure>
+                </div>
+                <p class="prac__word pink at" style="--s0:.76;--inv:7;left:46%;bottom:3%">Your improvement</p>
+              </div>
             </div>
           </div>
         </div>
@@ -519,41 +553,45 @@
               <div>
                 <p class="rule" style="margin-bottom:var(--s-5)"><span>07 / Where it runs</span></p>
                 <h2 class="t-mega">On your<br />machine.<br /><span class="pink">All of it.</span></h2>
-                <p class="t-read" style="margin-top:var(--s-5)">
+                <p class="t-read m-cut" style="margin-top:var(--s-5)">
                   The engine, the model and the database are processes on your
                   computer. No account, no upload, nothing to cancel.
+                </p>
+                <p class="t-read m-only" hidden style="margin-top:var(--s-5)">
+                  Every part of it is a process on your computer. No account,
+                  no upload.
                 </p>
               </div>
 
               <div class="arch">
-                <div class="arch__row at" style="--s0:.05;--inv:9">
+                <div class="arch__row m-cut at" style="--s0:.05;--inv:9">
                   <span class="arch__k">Backend</span>
                   <span class="arch__v">Spring Boot · orchestration and the API</span>
                   <span class="arch__p">:8086</span>
                 </div>
                 <div class="arch__row at" style="--s0:.12;--inv:9">
                   <span class="arch__k">Engine</span>
-                  <span class="arch__v">Stockfish · a child process on UCI</span>
+                  <span class="arch__v m-cut">Stockfish · a child process on UCI</span><span class="arch__v m-only" hidden>Stockfish</span>
                   <span class="arch__p">subprocess</span>
                 </div>
                 <div class="arch__row at" style="--s0:.19;--inv:9">
                   <span class="arch__k">Model</span>
-                  <span class="arch__v">Ollama · one request per explanation</span>
+                  <span class="arch__v m-cut">Ollama · one request per explanation</span><span class="arch__v m-only" hidden>Ollama</span>
                   <span class="arch__p">:11434</span>
                 </div>
-                <div class="arch__row at" style="--s0:.26;--inv:9">
+                <div class="arch__row m-cut at" style="--s0:.26;--inv:9">
                   <span class="arch__k">Database</span>
                   <span class="arch__v">PostgreSQL · games, mistakes, patterns</span>
                   <span class="arch__p">:5432</span>
                 </div>
-                <div class="arch__row at" style="--s0:.33;--inv:9">
+                <div class="arch__row m-cut at" style="--s0:.33;--inv:9">
                   <span class="arch__k">Interface</span>
                   <span class="arch__v">React · the six screens</span>
                   <span class="arch__p">:5173</span>
                 </div>
                 <div class="arch__row arch__row--out at" style="--s0:.42;--inv:9">
                   <span class="arch__k">Outbound</span>
-                  <span class="arch__v">Chess.com archives · your username, read-only</span>
+                  <span class="arch__v m-cut">Chess.com archives · your username, read-only</span><span class="arch__v m-only" hidden>Chess.com, read-only</span>
                   <span class="arch__p">the only one</span>
                 </div>
                 <p class="micro-label" style="margin-top:var(--s-4)">
@@ -576,14 +614,17 @@
               <div>
                 <p class="rule" style="margin-bottom:var(--s-5)"><span>08 / Install</span></p>
                 <h2 class="t-big">Running in about<br /><span class="pink">five minutes</span>.</h2>
-                <p class="t-note" style="margin-top:var(--s-4)">
+                <p class="t-note m-cut" style="margin-top:var(--s-4)">
                   No account, nothing to sign in to. Start four local processes,
                   give it your Chess.com username, and it does the rest.
                 </p>
-                <div class="dl__cta">
+                <p class="t-note m-only" hidden style="margin-top:var(--s-4)">
+                  No account. Give it your Chess.com username and it does the rest.
+                </p>
+                <div class="dl__cta m-cut">
                   <a class="btn btn--solid" href="https://github.com/praxis-chess/Praxis-Chess/releases/latest" target="_blank" rel="noopener">Download Praxis</a>
                 </div>
-                <div style="margin-top:var(--s-6)">
+                <div class="m-cut" style="margin-top:var(--s-6)">
                   <details class="faq__i">
                     <summary class="faq__q">Does any of my data leave the machine? <i>+</i></summary>
                     <p class="faq__a">No. The only outbound request is to the public
@@ -631,7 +672,7 @@
                     <span class="dl__go">GitHub →</span>
                   </a>
                 </div>
-                <p class="micro-label" style="margin-top:var(--s-5)">
+                <p class="micro-label m-cut" style="margin-top:var(--s-5)">
                   Requires JDK 21 <span class="dim2">//</span> Docker
                   <span class="dim2">//</span> Stockfish <span class="dim2">//</span>
                   Ollama for explanations <span class="dim2">//</span> ~6 GB disk
@@ -652,8 +693,11 @@
               <h2 class="t-mega at at--rise" style="--s0:.02;--inv:3">
                 You already<br />played the games.
               </h2>
-              <p class="t-big at at--rise" style="--s0:.16;--inv:3;margin-top:var(--s-5);max-width:22ch">
+              <p class="t-big at at--rise m-cut" style="--s0:.16;--inv:3;margin-top:var(--s-5);max-width:22ch">
                 Now find out what they keep trying to <span class="pink">teach you</span>.
+              </p>
+              <p class="t-big m-only" hidden style="margin-top:var(--s-5);max-width:22ch">
+                Find out what they <span class="pink">keep teaching you</span>.
               </p>
               <div class="end__row at at--fade" style="--s0:.30;--inv:4">
                 <a class="btn btn--solid" href="https://github.com/praxis-chess/Praxis-Chess/releases/latest" target="_blank" rel="noopener">Download Praxis</a>

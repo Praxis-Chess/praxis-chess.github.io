@@ -165,6 +165,14 @@
   /* ---- scene 09 -------------------------------------------------------- */
   .end__foot{ position:static; margin-top:var(--s-8); flex-direction:column;
               align-items:flex-start; gap:var(--s-3); }
+  /* THE FOOTER SITS OUTSIDE .scene__in, SO IT HAS NO GUTTER OF ITS OWN.
+     On desktop it is position:absolute with left/right set to var(--gutter),
+     and that is where its inset comes from. The phone build makes it static
+     to put it back in flow, which discards left/right - and because it is a
+     sibling of .scene__in rather than a child, there is no padding-inline
+     underneath to fall back on. Both lines ended up hard against the screen
+     edge while everything above them was indented. */
+  .end__foot{ padding-inline:var(--gutter); }
   .end__foot nav{ gap:var(--s-4); }
 
   /* ---- captures --------------------------------------------------------
@@ -183,6 +191,206 @@
   .shot--tall{ aspect-ratio:4 / 3; }
 
   .board{ --sq:min(34px,9.6vw); }
+
+  /* ======================================================================
+     THE EDITORIAL CUT — phone only.
+
+     The phone build was a faithful transcription of the desktop page: same
+     nine scenes, same copy, same nine captures, stacked. Faithful and far too
+     long. It ran to 7,240px, nine full screens, 690 words and nine
+     screenshots, and almost none of that survives a thumb: an eighteen-row
+     accumulation grid whose whole point is an animation the phone does not
+     run, a twenty-two-row engine feed doing the same, five stacked captures
+     carrying thirty-six words between them.
+
+     So the phone gets the edit, not the reduction. Nothing here shrinks type,
+     tightens tracking or squeezes tap targets. It removes whole blocks that
+     were carrying their weight on a wide screen and are carrying none here,
+     and it keeps every heading, every headline number and the three captures
+     that show something the copy cannot.
+
+     TWO MECHANISMS, AND NEITHER CAN REACH THE DESKTOP BUILD:
+
+       .m-cut    on the element, hidden here. Desktop has no rule for the
+                 class, so adding it changes nothing there.
+       .m-only   plus the `hidden` attribute in the markup. The attribute
+                 hides it everywhere by default and this block reveals it,
+                 which is how a phone gets its own shorter wording without a
+                 single line of desktop CSS moving.
+
+     A hidden capture also does not download. shots.js still builds every
+     slot, but a lazy <img> inside a display:none box has no layout box, never
+     intersects the viewport and is never fetched - so the six cut captures
+     cost a phone nothing at all.
+     ====================================================================== */
+  .m-cut{ display:none !important; }
+  .m-only{ display:block; }
+
+  /* 02 - the accumulation grid. Eighteen fragments condensed to six still
+     reads as a wall of notation, and the thing it exists to do - pile up as
+     you travel - is a scrub the phone does not have. The scene still says
+     one mistake, then the pattern, then the count. */
+  .prob__many{ display:none; }
+
+  /* 04 - the engine feed. Same reasoning: on desktop the column visibly
+     thins as the filter runs. Here it was four surviving rows and a caption,
+     stating an idea the five stages beside it already state. */
+  .pipe__feed{ display:none; }
+  /* And the five glosses. The stage NAMES are the pipeline - sync, evaluate,
+     filter, explain, aggregate - and five paragraphs explaining five words is
+     the repetition this edit is for. */
+  .pipe__b{ display:none; }
+  .pipe__stage{ padding-block:2px; }
+
+  /* 03 - the patterns capture. It is the same screen scene 06 shows, and on
+     a phone the two land four scroll-flicks apart with nothing between them
+     but the argument they both illustrate. One of them is enough, and 06 is
+     where it earns its place. Three captures survive on the whole page:
+     the mistake list, the pattern report, the drill - analysis, aggregation,
+     practice, which is the entire product in three pictures. */
+  .diff__shot{ display:none; }
+
+  /* 06 - two capture/word pairs instead of five, which is the section's own
+     sentence: your weakness, then your drill.
+
+     EACH PAIR GETS A BOX. Stacked in one column, a screenshot and the two
+     words underneath it were four loose objects in a row with identical
+     spacing between all of them, so nothing said which word belonged to
+     which picture. A hairline around each pair says it once and says it
+     structurally - the same card the application itself draws, at the same
+     radius, off the same tokens. */
+  .prac{ gap:var(--s-5); }
+  .prac__cell{
+    border:1px solid var(--hairline);
+    border-radius:var(--r-card);
+    background:var(--surface-1);
+    padding:var(--s-3);
+  }
+  /* The capture carries its own hairline, which exists because a near-black
+     screenshot on a near-black page has no edge of its own. Inside a box it
+     has one, and two rules 12px apart read as a mistake. */
+  .prac__cell .shot{ box-shadow:none; }
+  .prac__cell .prac__step{ margin-bottom:0; }
+  .prac__word{
+    margin-bottom:0; margin-top:var(--s-3);
+    /* The glow exists to lift the word off a capture it overlaps on desktop.
+       In a box it sits on the box, and the shadow only muddies the type. */
+    text-shadow:none;
+  }
+  /* The drills capture is a 16:10 window with an empty bottom third. Measured
+     off the file, its content runs from 0.20 to 0.65 of the height and
+     everything below that is flat background.
+
+     cover scales to the frame's WIDTH here, so the board's size on screen is
+     fixed by the box and cannot be improved by cropping - all a shorter frame
+     does is stop printing the empty part. 2:1 at 34% was still showing
+     0.07-0.87, which is most of the waste. 2.6:1 at 30% shows 0.12-0.73: the
+     whole board, the whole prompt, and almost none of the background. */
+  .prac__step--3 .shot{ aspect-ratio:2.6 / 1; }
+  .prac__step--3 .shot__img{ object-position:50% 30%; }
+
+  /* 02 - three grid children became two when the accumulation went, so the
+     gap that separated three states is now holding two apart. */
+  .prob__stage{ gap:var(--s-6); }
+
+  /* Four counters, 307px of content in 335px of room: the flex row wrapped
+     three-and-one, which turns a rising progression into a row of three and
+     an orphan. Two-by-two keeps it reading as a progression - 1 to 11, 42 to
+     97 - and gives the longest label ("times you made it") a column it fits
+     in. Only this row: the pipeline's four labels are short and its single
+     line is correct. */
+  .prob__count .prob__counters{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:var(--s-5) var(--s-4);
+  }
+
+  /* ---- the reading measure --------------------------------------------
+     With the blocks gone the remaining prose is what the page is, so it gets
+     a comfortable line rather than the full gutter-to-gutter width. */
+  .t-read{ font-size:1.02rem; line-height:1.6; }
+
+  /* Sections can breathe a little less now that each holds a third less.
+     The RATIO of space to content is what reads as rhythm, and that is
+     unchanged; this only stops nine near-empty scenes from adding a
+     screen and a half of padding between them. */
+  .scene__pin{ padding-block:var(--s-5); }
+
+  /* ======================================================================
+     SECOND PASS — still too much reading.
+
+     The first cut removed the blocks that were doing nothing on a phone.
+     What was left was still a wall: nine sections each opening with a label,
+     a headline and a paragraph, and the paragraphs were written for a wide
+     measure where twenty-four words are two lines. At 335px the same
+     sentence is five, and five lines of body copy under every headline is
+     what "lots of text" actually means.
+
+     So this pass shortens the sentences rather than hiding more of them, and
+     removes the two exhibits that were arguing a point the section above had
+     already made. Every headline survives. Every number survives.
+     ====================================================================== */
+
+  /* 01 - the eyebrow. The masthead two centimetres above it already says
+     PRAXIS, and "local-first game analysis" is the line the whole page is
+     about to make at display size. */
+  .hero__eyebrow{ display:none; }
+
+  /* 03 - the engine readout. Six mono rows cut to three in the first pass,
+     and three rows of notation under a label still occupy a fifth of the
+     section to set up a contrast the phone cannot draw: on desktop the dim
+     narrow column sits BESIDE the statement, which is the whole comparison.
+     Stacked, it is just preamble. The statement is the section. */
+  .diff__engine{ display:none; }
+
+  /* 08 - the platform specs. "10 / 11 - x64 - zip" wraps to its own line
+     under every row, four times. Which OS you are on is the choice; the
+     build details are on the release page you are one tap from. */
+  .dl__m{ display:none; }
+
+  /* ---- captures: same three, less height ------------------------------
+     A 4:3 frame of a dense analytics screen at 335px is 250px of texture.
+     Cropping the frames wider keeps what makes each recognisable - the
+     ranked cards, the board - and gives back most of a screen across the
+     three of them. */
+  .rep__shot .shot{ aspect-ratio:2 / 1; }
+  .rep__shot .shot__img{ object-position:50% 34%; }
+  .prac__step--2 .shot{ aspect-ratio:16 / 9; }
+
+  /* ---- the measure ----------------------------------------------------
+     The remaining paragraphs are short enough to hold a tighter leading
+     without crowding, and the display type comes down a notch: 11vw put
+     three-word headlines on three lines. Still the loudest thing on screen. */
+  .t-read{ line-height:1.55; }
+
+  /* Three claims on one flex line wrap to two, and a 26px row gap between
+     them made the second look like a new block rather than the rest of the
+     same row. The column gap stays wide; only the row gap closes. */
+  .hero__meta{ gap:var(--s-2) var(--s-6); }
+  /* Five stages that are now five single words do not need the leading of
+     five paragraphs. */
+  .pipe__stages{ gap:14px; }
+  .end__foot{ margin-top:var(--s-6); }
+  .t-mega{ font-size:clamp(1.95rem,9.6vw,2.9rem); }
+  .t-big{ font-size:clamp(1.5rem,6.9vw,2rem); }
+
+
+  /* ---- tap targets -----------------------------------------------------
+     Cutting content is no good if what survives is hard to hit. Everything
+     you can press gets a real 44px, which is the one number in this file
+     that is about fingers rather than about reading. The footer links were
+     14px tall - a text baseline, not a target. */
+  .btn{ min-height:44px; }
+  .hdr__actions .btn{ min-height:40px; }
+  .burger{ min-width:44px; min-height:44px; }
+  .end__foot nav{ gap:var(--s-2); flex-wrap:wrap; }
+  /* No leading padding: the first link has to start on the same vertical as
+     the line above it, and 2px of inset in a mono uppercase footer reads as a
+     misalignment. The tap target grows to the right instead. */
+  .end__foot nav a{ display:inline-flex; align-items:center;
+                    min-height:44px; padding-inline:0 16px; }
+  .dl__row{ min-height:56px; align-content:center; }
+  .faq__q{ min-height:44px; display:flex; align-items:center; }
+
 
   /* ==========================================================================
      THE REVEAL — phone only.
