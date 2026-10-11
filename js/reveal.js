@@ -36,7 +36,7 @@ window.PAGE.register('reveal', function (scope) {
     '.scene__in h2', '.prob__said', '.prob__one .mvf', '.prob__line > div',
     '.prob__count .met', '.diff__praxis > .t-big', '.pipe__stage',
     '.pipe .prob__counters .met', '.rep__shot', '.rep__frag', '.rep__say',
-    '.arch__row', '.prac__cell', '#research .met', '.dl__row', '.dl__send',
+    '.arch__row', '.prac__cell', '#research .met', '.dl__row',
     '.end h2', '.end__row'
   ].join(',');
   Array.prototype.forEach.call(scope.querySelectorAll(GROUPS), function (el) {

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Praxis Chess · the engine finds the move, Praxis finds the pattern</title>
-<meta name="description" content="Praxis Chess evaluates your Chess.com games with Stockfish, checks every diagnosis against the engine's evidence, explains it with local language models, and turns your mistakes into patterns and drills. Runs on your machine; open source." />
+<meta name="description" content="Praxis Chess evaluates your Chess.com games with Stockfish, checks every diagnosis against the engine's evidence, explains it with local language models, and turns your mistakes into patterns and drills. Runs on your machine; open source, with the model it trained open on Hugging Face." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#121110" />
 <link rel="canonical" href="https://praxis-chess.github.io/" />
@@ -113,7 +113,7 @@
     <a class="menu__link" href="/#download" data-spy="download end">Get Praxis <i>09</i></a>
   </nav>
   <div class="menu__foot">
-    <a class="btn btn--solid btn--wide" href="mailto:?subject=Praxis%20Chess&amp;body=Open%20this%20on%20your%20computer%3A%20https%3A%2F%2Fpraxis-chess.github.io%2F" data-share>Send to my computer</a>
+    <a class="btn btn--solid btn--wide" href="mailto:?subject=Praxis%20Chess&amp;body=Open%20this%20on%20your%20computer%3A%20https%3A%2F%2Fpraxis-chess.github.io%2F" data-share>Get Praxis</a>
     <a class="btn btn--quiet btn--wide" href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">View source</a>
   </div>
 </div>
@@ -155,7 +155,7 @@
                      carries [hidden]: .btn sets display, which beats the
                      attribute, and would show it on desktop. -->
                 <div class="hero__cta">
-                  <span class="m-only" hidden><a class="btn btn--solid" href="mailto:?subject=Praxis%20Chess&amp;body=Open%20this%20on%20your%20computer%3A%20https%3A%2F%2Fpraxis-chess.github.io%2F" data-share>Send to my computer</a></span>
+                  <span class="m-only" hidden><a class="btn btn--solid" href="mailto:?subject=Praxis%20Chess&amp;body=Open%20this%20on%20your%20computer%3A%20https%3A%2F%2Fpraxis-chess.github.io%2F" data-share>Get Praxis</a></span>
                   <a class="btn btn--solid m-cut" href="/#download">Get Praxis</a>
                   <a class="btn btn--quiet" href="/#pipeline">How it works</a>
                 </div>
@@ -164,6 +164,11 @@
                   <span class="micro-label">Open source, MIT</span>
                   <span class="micro-label">Local by default</span>
                 </div>
+                <!-- DESKTOP ONLY. The first screen is where a visitor from a post
+                     decides whether to scroll, and the trained model is the newest
+                     thing here. The phone hero is already full (design/mobile, Q1
+                     and Q3), so it is cut there; the menu and footer carry it. -->
+                <a class="hero__new micro-label m-cut" href="/#research">New <span class="dim2">//</span> the model we trained, and its research, are open on Hugging Face →</a>
               </div>
 
               <div class="hero__shot">
@@ -741,8 +746,8 @@
                 <div class="dl__rows">
                   <a class="dl__row" href="https://huggingface.co/collections/praxis-chess/praxis-chess-lora-v1" target="_blank" rel="noopener">
                     <span class="dl__i">01</span>
-                    <span class="dl__n">Models and dataset</span>
-                    <span class="dl__m">Hugging Face · adapters, GGUFs, data</span>
+                    <span class="dl__n">Models on Hugging Face</span>
+                    <span class="dl__m">Adapters, GGUFs, dataset, every answer</span>
                     <span class="dl__go">Open →</span>
                   </a>
                   <a class="dl__row" href="https://github.com/Praxis-Chess/Praxis-Chess/blob/lora-v1.0/training/reports/writeup_v1.md" target="_blank" rel="noopener">
@@ -759,8 +764,9 @@
                   </a>
                 </div>
                 <p class="micro-label m-cut" style="margin-top:var(--s-5)">
-                  95% CI 99.6–99.9 <span class="dim2">//</span> 4B: 99.7% true,
-                  86.8% pass <span class="dim2">//</span> public data only
+                  Qwen3.5-2B + LoRA <span class="dim2">//</span> Apache-2.0
+                  <span class="dim2">//</span> 95% CI 99.6–99.9 <span class="dim2">//</span>
+                  4B: 99.7% true, 86.8% pass
                 </p>
               </div>
             </div>
@@ -789,9 +795,6 @@
                   the link and set it up on your computer. No account; only
                   your Chess.com username.
                 </p>
-                <div class="dl__send m-only" hidden>
-                  <a class="btn btn--solid btn--wide" href="mailto:?subject=Praxis%20Chess&amp;body=Open%20this%20on%20your%20computer%3A%20https%3A%2F%2Fpraxis-chess.github.io%2F" data-share>Send to my computer</a>
-                </div>
                 <div class="dl__cta m-cut">
                   <a class="btn btn--solid" href="https://github.com/Praxis-Chess/Praxis-Chess#getting-started" target="_blank" rel="noopener">Setup guide</a>
                 </div>
@@ -834,10 +837,10 @@
                     <span class="dl__m">Docker, Stockfish, Ollama, then two servers</span>
                     <span class="dl__go">Read →</span>
                   </a>
-                  <a class="dl__row m-cut" href="https://huggingface.co/collections/praxis-chess/praxis-chess-lora-v1" target="_blank" rel="noopener">
+                  <a class="dl__row m-cut" href="https://huggingface.co/praxis-chess/praxis-chess-reasoner-qwen3.5-2b-GGUF" target="_blank" rel="noopener">
                     <span class="dl__i">03</span>
-                    <span class="dl__n">Trained models</span>
-                    <span class="dl__m">Hugging Face · optional commentary model</span>
+                    <span class="dl__n">Commentary model</span>
+                    <span class="dl__m">Hugging Face · ready to run in Ollama</span>
                     <span class="dl__go">Open →</span>
                   </a>
                 </div>
@@ -869,7 +872,6 @@
                 Find out what they <span class="pink">keep teaching you</span>.
               </p>
               <div class="end__row at at--fade" style="--s0:.30;--inv:4">
-                <span class="m-only" hidden><a class="btn btn--solid" href="mailto:?subject=Praxis%20Chess&amp;body=Open%20this%20on%20your%20computer%3A%20https%3A%2F%2Fpraxis-chess.github.io%2F" data-share>Send to my computer</a></span>
                 <a class="btn btn--solid m-cut" href="https://github.com/Praxis-Chess/Praxis-Chess#getting-started" target="_blank" rel="noopener">Get Praxis</a>
                 <a class="btn btn--quiet" href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">Read the source</a>
               </div>

@@ -10,7 +10,7 @@
                     masthead's button going solid once the hero's own
                     primary has scrolled away, the open menu marking where
                     you are, and the hero board receding as you leave it
-     share          "Send to my computer": the share sheet, else the
+     share          the phone's "Get Praxis": the share sheet, else the
                     clipboard, else a mail to yourself
      inspect        tap a capture to open it full size and pan around it
      stages         the six pipeline stages open one at a time
@@ -30,7 +30,6 @@ window.PAGE.register('phone-chrome', function (scope) {
   var hdr = scope.querySelector('.hdr');
   var hero = scope.querySelector('#hero');
   var board = scope.querySelector('#hero .hero__shot');
-  var cta = scope.querySelector('#hero .hero__cta');
   if (!hdr) return;
 
   /* The progress hairline. Desktop carries the same 1px orchid bar in its
@@ -75,18 +74,19 @@ window.PAGE.register('phone-chrome', function (scope) {
   window.addEventListener('resize', onScroll, { passive: true });
   frame();
 
-  /* ONE SOLID BUTTON PER SCREEN. While the hero's primary is on screen the
-     masthead's control is an outline (css/mobile.css); once it has gone, the
-     masthead's turns solid and becomes the primary. The class marks "past",
-     not "at", so the first paint is already right and nothing flips on load. */
+  /* ONE SOLID BUTTON PER SCREEN. While any of the hero is under the masthead
+     its control is hidden (css/mobile.css); once the second section reaches
+     the masthead, the masthead's appears and becomes the primary. The class
+     marks "past", not "at", so the first paint is already right and nothing
+     flips on load. */
   var io = null, spy = null;
   if ('IntersectionObserver' in window) {
-    if (cta) {
+    if (hero) {
       io = new IntersectionObserver(function (entries) {
         var e = entries[0];
         root.classList.toggle('is-past-hero', !e.isIntersecting && e.boundingClientRect.top < 52);
       }, { rootMargin: '-52px 0px 0px 0px' });
-      io.observe(cta);
+      io.observe(hero);
     }
 
     /* WHERE YOU ARE, in the open menu. The section crossing a line a third
