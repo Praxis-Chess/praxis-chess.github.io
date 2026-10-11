@@ -58,6 +58,9 @@ window.PAGE.register('nav', function (scope) {
   function setOpen(open) {
     if (!btn || !menu) return;
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    /* The button stays on screen while the sheet is open - the sheet starts
+       below the masthead - so its name has to follow its state. */
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     menu.hidden = !open;
     /* On <html>, not on body. iOS Safari ignores overflow:hidden on body
        when a scroll gesture is already in flight, and the page carries on
@@ -80,6 +83,9 @@ window.PAGE.register('nav', function (scope) {
      otherwise leave the menu covering the thing it just scrolled to. */
   function onMenuClick(e) {
     if (e.target.closest && e.target.closest('a,button')) setOpen(false);
+    /* A tap on the sheet's own empty space closes it too. Phones have no
+       Escape key, and the empty space is where a thumb goes to dismiss. */
+    else if (e.target === menu || e.target.parentNode === menu) setOpen(false);
   }
 
   /* CROSSING THE BREAKPOINT WITH THE MENU OPEN left an open sheet and a

@@ -587,6 +587,27 @@ html.is-moved .hint{ opacity:0; }
    argument, and it is now large enough to read. */
 .hero__shot .shot{ aspect-ratio:16 / 10; }
 
+/* The hero board (js/heroboard.js). Square, hairline gaps of the page's own
+   canvas between the squares, exactly as the og-image draws them. The trail
+   is an inset wash rather than a second colour, so it reads the same on a
+   light and a dark square. */
+.pboard{
+  display:grid; grid-template-columns:repeat(8, 1fr); gap:2px; padding:2px;
+  width:min(100%, 34rem); aspect-ratio:1 / 1; max-width:100%;
+  margin-left:auto; background:var(--canvas);
+}
+.pboard__sq{
+  display:block; background:var(--pboard-dark);
+  transition:background-color .7s ease, box-shadow .7s ease;
+}
+.pboard__sq.is-light{ background:var(--pboard-light); }
+.pboard__sq.is-on{ background:var(--orchid); }
+.pboard__sq.is-t1{ box-shadow:inset 0 0 0 100vmax rgba(231,166,214,.34); }
+.pboard__sq.is-t2{ box-shadow:inset 0 0 0 100vmax rgba(231,166,214,.18); }
+.pboard__sq.is-t3{ box-shadow:inset 0 0 0 100vmax rgba(231,166,214,.08); }
+.pboard__read{ margin-top:var(--s-3); text-align:right; font-variant-numeric:tabular-nums; }
+@media (prefers-reduced-motion: reduce){ .pboard__sq{ transition:none; } }
+
 /* ==========================================================================
    8 · SCENE 02 — THE PROBLEM
    One move becomes many becomes one pattern. The signature moment, and the

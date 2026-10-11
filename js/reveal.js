@@ -23,6 +23,27 @@ window.PAGE.register('reveal', function (scope) {
   'use strict';
 
   var root = document.documentElement;
+
+  /* WHAT ARRIVES, chosen here rather than in the markup, because the markup
+     is shared with the desktop build and this file only ever runs on the
+     phone. One entrance per block. The stagger is given out when blocks
+     ARRIVE (see the observer below), not by their place in the section: a
+     block that scrolls in on its own should not wait out a delay meant for
+     a row of siblings. The hero is left alone: it is on screen at load, and a first screen that
+     assembles itself is the opposite of "less, but deliberate". */
+  var GROUPS = [
+    '.scene__in > .rule', '.scene__in .local > div > .rule', '.scene__in .dlg > div > .rule',
+    '.scene__in h2', '.prob__said', '.prob__one .mvf', '.prob__line > div',
+    '.prob__count .met', '.diff__praxis > .t-big', '.pipe__stage',
+    '.pipe .prob__counters .met', '.rep__shot', '.rep__frag', '.rep__say',
+    '.arch__row', '.prac__cell', '#research .met', '.dl__row', '.dl__send',
+    '.end h2', '.end__row'
+  ].join(',');
+  Array.prototype.forEach.call(scope.querySelectorAll(GROUPS), function (el) {
+    if (el.closest('#hero') || el.offsetParent === null) return;
+    el.classList.add('rvl');
+  });
+
   var els = Array.prototype.slice.call(scope.querySelectorAll('.rvl'));
   if (!els.length) return;
 
@@ -44,8 +65,10 @@ window.PAGE.register('reveal', function (scope) {
      the moment its first pixel lands. threshold 0 keeps tall elements —
      a full-height analysis card — from waiting until they are fully in. */
   var io = new IntersectionObserver(function (entries) {
+    var k = 0;                          // blocks arriving together, in order
     entries.forEach(function (e) {
       if (!e.isIntersecting) return;
+      e.target.style.setProperty('--i', Math.min(k++, 5));
       e.target.classList.add('is-in');
       io.unobserve(e.target);
     });
