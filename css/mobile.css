@@ -81,7 +81,6 @@
     padding-block:var(--s-8);
   }
   .scene:first-child .scene__pin{ padding-top:calc(var(--header-h) + var(--s-7)); }
-  .scene + .scene .scene__pin{ border-top:1px solid var(--hairline); }
   .scene__in,.scene__in--wide{ max-width:none; }
 
   /* THE SCRUB IS GONE, SO THE THINGS IT DROVE MUST BE ON.
@@ -510,12 +509,28 @@
 
   /* ---- masthead --------------------------------------------------------- */
   .brand{ min-height:44px; min-width:44px; }
-  .hdr__actions .btn{ min-height:44px; height:44px; padding:0 14px; }
+  /* Drawn at the logo's and the burger's scale, so the masthead reads as one
+     row of small marks rather than a button with an icon either side. The
+     finger still gets 44px: the ::after extends the hit area past the box. */
+  .hdr__actions .btn{
+    position:relative; min-height:0; height:24px; padding:0 10px;
+    font-size:10px;
+  }
+  .hdr__actions .btn::after{ content:''; position:absolute; inset:-10px -4px; }
   /* One solid control per screen. Over the hero, whose own primary is right
-     there, the masthead's is an outline; js/phone.js sets .is-past-hero once
-     that button has scrolled away and the masthead's becomes the primary. */
+     there, the masthead's is hidden; js/phone.js sets .is-past-hero once the
+     second section reaches the masthead, and the masthead's comes into focus
+     out of a blur. It keeps its box while hidden, so the burger never shifts. */
+  .hdr__actions .btn--solid{
+    transition:opacity .35s ease, filter .35s ease, transform .35s ease,
+               visibility .35s, background var(--dur-fast), border-color var(--dur-fast);
+  }
   html.is-mobile:not(.is-past-hero) .hdr__actions .btn--solid{
-    background:transparent; color:var(--orchid); border-color:var(--hairline-lit);
+    opacity:0; visibility:hidden; pointer-events:none;
+    filter:blur(6px); transform:scale(.94);
+  }
+  @media (prefers-reduced-motion:reduce){
+    html.is-mobile:not(.is-past-hero) .hdr__actions .btn--solid{ filter:none; transform:none; }
   }
   /* Reading progress, the phone's version of the desktop strip's bar. */
   .hdr__bar{
@@ -659,12 +674,10 @@
   html.has-reveal #research .met.rvl:not(.is-in)::after{ background-size:0 100%, auto; }
 
   /* ---- 10 get praxis ---------------------------------------------------- */
-  .dl__send{ margin-top:var(--s-5); }
   .dlg{ gap:var(--s-5); }
 
   /* ---- 11 end ----------------------------------------------------------- */
   .end__row{ margin-top:var(--s-6); gap:var(--s-3); }
-  .end__row .m-only{ display:contents; }
 
   /* ---- captures you can open --------------------------------------------
      js/phone.js makes each visible capture a button and adds this tag. Same

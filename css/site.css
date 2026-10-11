@@ -568,6 +568,11 @@ html.is-moved .hint{ opacity:0; }
 .hero__l2{ margin-top:.05em; }
 .hero__cta{ margin-top:var(--s-6); display:flex; gap:var(--s-3); flex-wrap:wrap; }
 .hero__meta{ margin-top:var(--s-6); display:flex; gap:var(--s-6); flex-wrap:wrap; }
+/* The one line in the hero that leaves the product for the research. Set as
+   a label, not a button: it is news, and the two buttons above are the
+   actions. */
+.hero__new{ display:inline-block; margin-top:var(--s-4); color:var(--orchid); text-decoration:none; }
+.hero__new:hover,.hero__new:focus-visible{ text-decoration:underline; text-underline-offset:3px; }
 .hero__shot{
   position:relative; z-index:1;
   transform:translate3d(0, calc(var(--p) * -21vh), 0);
