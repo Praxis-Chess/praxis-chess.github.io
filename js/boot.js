@@ -27,7 +27,8 @@
      is off on mobile until somebody has decided it belongs there.
      tools/check.py fails the build if a name here is not registered by any
      file, or is registered by a file the pages do not load. */
-  var MOBILE = ['nav', 'reveal', 'board', 'copy', 'shots', 'a11y', 'fps'];
+  var MOBILE = ['nav', 'reveal', 'board', 'heroboard', 'copy', 'shots', 'a11y', 'fps',
+                'phone-chrome', 'share', 'inspect', 'stages', 'counts'];
 
   function go() {
     /* ?off=grain acts on the DOM rather than on a renderer, so it is applied

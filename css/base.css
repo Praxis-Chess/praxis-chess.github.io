@@ -52,6 +52,10 @@
   /* ---- CHESSBOARD ------------------------------------------------------ */
   --board-light: #E3DBD1;
   --board-dark:  #4A4340;
+  /* The hero board: the og-image's palette, dark on dark, so the one orchid
+     square is the only thing on it that speaks. */
+  --pboard-light: #342F2D;
+  --pboard-dark:  #1E1B1A;
 
   /* ---- TYPE ------------------------------------------------------------
      Two layers: families at the bottom, ROLES above. Every rule reads a

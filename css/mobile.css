@@ -30,7 +30,10 @@
    ========================================================================== */
 @media (max-width:1080px){
   .hero{ grid-template-columns:minmax(0,1fr); gap:var(--s-6); }
-  .hero__shot{ display:none; }      /* the capture needs width to read at all */
+  /* The board reads at any width, unlike the capture this slot used to hold. */
+  .hero__shot{ display:block; }
+  .pboard{ width:min(100%, 20rem); margin:0 auto; }
+  .pboard__read{ text-align:center; }
   .diff,.pipe,.local,.dlg{ grid-template-columns:minmax(0,1fr); gap:var(--s-6); }
   .pipe__feed{ height:34vh; }
   .rep__shot{ width:100%; }
@@ -426,18 +429,318 @@
 /* ==========================================================================
    ACTUAL SMALL PHONES
    ========================================================================== */
+/* The display sizes that used to live here are gone. A separate scale below
+   400px put most iPhones (375, 390) on it, and gave a 430px phone a SMALLER
+   section headline than a 390px one. The phone build below sets one fluid
+   scale across every width instead. */
 @media (max-width:400px){
   :root{ --gutter:16px; }
   .brand span{ display:none; }
-  .t-mega{ font-size:clamp(1.9rem,11.5vw,2.5rem); }
-  .t-big{ font-size:clamp(1.45rem,8vw,1.9rem); }
   .prob__many{ grid-template-columns:minmax(0,1fr); }
   .prob__many .mvf:nth-child(n+6){ display:none; }
   .prob__counters{ gap:var(--s-5); }
-  .met__v{ font-size:1.6rem; }
-  .menu__link{ font-size:1.6rem; }
 }
+
+/* ==========================================================================
+   THIRD PASS — designed for the phone, not cut down for it.
+
+   The first two passes made the phone build shorter. This one makes it
+   deliberate: the same tokens, the same voice, but each scene asks what a
+   thumb can do with it. Placed after the small-phone tier on purpose, so one
+   fluid scale runs from 320 to 760 with no step in the middle.
+
+   Everything here is inside the 760px query, and everything it styles that
+   the desktop build also has is reached only through phone-only classes
+   (.m-only, .rule__n, .is-open, .lb...) or through rules that already lived
+   in this block. Nothing here can reach a screen wider than 760px.
+   ========================================================================== */
+@media (max-width:760px){
+
+  /* ---- the spacing ladder, frozen -------------------------------------
+     site.css retunes these tokens on SHORT windows (820px and 700px tall),
+     which is right for a pinned desktop scene that must fit one viewport
+     and wrong for a phone that scrolls: a 375x667 phone was getting 16px
+     section padding and smaller notes than a 390x844 one, by accident. The
+     phone build has its own measure and holds it at every height: one
+     notch tighter than the desktop ladder, at every height, so the page is
+     consistent AND shorter rather than consistent and taller. */
+  :root{ --s-5:20px; --s-6:28px; --s-7:40px; --s-8:56px; --s-9:80px; }
+  .arch__row{ padding-block:10px; }
+  .dl__row{ padding-block:12px; }
+  /* 0, not a token: .prob__stage is a grid on the phone and its gap already
+     separates the counters from the payoff. The margin doubled it. */
+  .prob__count{ margin-top:0; }
+  .prob__count-k{ margin-bottom:var(--s-4); padding-bottom:var(--s-3); }
+  .prob__gloss{ margin-top:var(--s-4); }
+  .hero__cta{ margin-top:var(--s-5); }
+  .hero__meta{ margin-top:var(--s-4); }
+
+  /* ---- one type scale, fluid end to end -------------------------------
+     THE HERO HEADLINE IS THE LARGEST THING ON THE PAGE. A desktop rule
+     (.hero .t-mega) out-specified the phone's own, so "Praxis finds the
+     pattern" was set at 35px under 40px section headlines. It now leads
+     every other headline at every width, and the engine's half sits a full
+     step below it, which is the argument the two sizes exist to make. */
+  .t-mega{ font-size:clamp(2.25rem, 10.4vw, 3rem); }
+  .t-big,.diff .t-big{ font-size:clamp(1.6rem, 7.6vw, 2.05rem); }
+  .hero .t-mega{ font-size:clamp(2.5rem, 12.8vw, 3.5rem); line-height:.86; }
+  .hero .t-big{ font-size:clamp(1.3rem, 6.2vw, 1.7rem); }
+  .t-read{ font-size:1.02rem; line-height:1.55; }
+  .t-note{ font-size:.9rem; line-height:1.55; }
+  .met__v{ font-size:clamp(1.6rem, 7.4vw, 1.9rem); }
+
+  /* ---- the small labels, made legible ----------------------------------
+     Section labels, metric labels, link affordances and the footer were 9px
+     in --text-tertiary, 3.35:1 against the canvas. They carry real words -
+     "games read", "times you made it", "demo data" - so on a phone they go
+     to 11px in --text-secondary (6.9:1). The // separators stay tertiary:
+     they are punctuation, not content. */
+  .rule,.met__l,.prob__count-k,.rep__frag span,.end__foot,.micro-label,
+  .dl__go,.arch__p,.prob__key{
+    font-size:11px; letter-spacing:.12em; color:var(--text-secondary);
+  }
+  .arch__k,.dl__i,.pipe__n{ font-size:11px; letter-spacing:.12em; }
+  .met__l{ line-height:1.35; }
+
+  /* The numbers in section labels count the desktop rail, which the phone
+     does not have; down here they read as gaps (02, 04, 06...). The menu
+     numbers its own list instead. */
+  .rule__n{ display:none; }
+  .rule .m-only{ display:inline; }
+
+  /* ---- masthead --------------------------------------------------------- */
+  .brand{ min-height:44px; min-width:44px; }
+  .hdr__actions .btn{ min-height:44px; height:44px; padding:0 14px; }
+  /* One solid control per screen. Over the hero, whose own primary is right
+     there, the masthead's is an outline; js/phone.js sets .is-past-hero once
+     that button has scrolled away and the masthead's becomes the primary. */
+  html.is-mobile:not(.is-past-hero) .hdr__actions .btn--solid{
+    background:transparent; color:var(--orchid); border-color:var(--hairline-lit);
+  }
+  /* Reading progress, the phone's version of the desktop strip's bar. */
+  .hdr__bar{
+    position:absolute; left:0; right:0; bottom:-1px; height:1px;
+    background:var(--orchid); opacity:.8;
+    transform:scaleX(0); transform-origin:0 50%; pointer-events:none;
+  }
+
+  /* ---- the menu ---------------------------------------------------------
+     IT OPENS UNDER THE MASTHEAD, not over it. Covering the header covered
+     the only control that could close it; now the burger stays put and turns
+     into a cross. A tap on empty space closes it too (js/nav.js). */
+  .menu{
+    inset:var(--header-h) 0 0 0; z-index:calc(var(--z-header) - 1);
+    padding:var(--s-3) var(--gutter) calc(var(--s-6) + env(safe-area-inset-bottom, 0px));
+    overscroll-behavior:contain;
+  }
+  .menu:not([hidden]){ animation:menuIn 240ms var(--ease-out); }
+  .menu__link{
+    font-size:clamp(1.4rem, 6.8vw, 1.85rem); padding:11px 0;
+    border-bottom:1px solid var(--hairline);
+    transition:color var(--dur-fast);
+  }
+  .menu__link i{ font-size:11px; letter-spacing:.12em; color:var(--text-secondary); }
+  .menu__link[aria-current]{ color:var(--orchid); }
+  .menu__link[aria-current] i{ color:var(--orchid); }
+  .menu__foot{ margin-top:var(--s-6); }
+
+  /* ---- 01 hero --------------------------------------------------------- */
+  #hero .scene__pin{
+    padding-top:calc(var(--header-h) + var(--s-6));
+    /* The board lags the scroll (js/phone.js). Clipping here is what lets it
+       sink behind the next section instead of sliding over its label. */
+    overflow:hidden; overflow:clip;
+  }
+  .hero{ gap:var(--s-6); }
+  .hero__cta{ gap:var(--s-3); }
+  .hero__cta .m-only{ display:contents; }
+  .hero__meta{ gap:var(--s-2) var(--s-5); }
+  /* Smaller, so the first screen holds the claim, both buttons and the
+     board; and a step lighter on its light squares, because at 1.3:1 the
+     grid disappeared on a phone held outdoors. Still dark on dark. */
+  .pboard{
+    width:min(74vw, 17.5rem);
+    --pboard-light:#3A3431;
+  }
+  .hero__shot{ transform-origin:50% 0; }
+  .pboard__read{ margin-top:var(--s-3); }
+
+  /* ---- 02 the gap -------------------------------------------------------
+     The payoff is something Praxis would actually write, so it is set as a
+     quotation from the product - sentence case, a source line above it -
+     rather than as a fourth all-caps headline in a row. Four lines of tight
+     uppercase was the hardest sentence on the page to read. */
+  .prob__src{ margin-bottom:var(--s-3); }
+  /* The engine readout is one nowrap line, 338px of it, and at 320px it
+     pushed the whole scene's grid track past the screen, where overflow-x
+     clipped the right edge of every line in it. The track may not grow past
+     the column, and the readout breaks between its fragments - never inside
+     one - when a phone is too narrow to hold it. */
+  .prob__stage{ grid-template-columns:minmax(0,1fr); }
+  .prob__one .mvf{ flex-wrap:wrap; row-gap:4px; }
+  .prob__line .t-big{
+    text-transform:none; letter-spacing:-0.028em; line-height:1.06;
+    font-size:clamp(1.45rem, 6.6vw, 1.85rem);
+  }
+
+  /* 03 joins 02. "An engine tells you that you were wrong. Rarely why." is
+     the conclusion of the scene above it, not a scene of its own; a rule and
+     a full section's padding between them split one thought in two. */
+  #difference .scene__pin{ border-top:0; padding-top:var(--s-2); }
+
+  /* ---- 04 how it works: six stages that open --------------------------- */
+  .pipe__stages{ gap:0; border-top:1px solid var(--hairline); }
+  .pipe__stage{ display:block; padding:0; border-bottom:1px solid var(--hairline); }
+  .pipe__tog{
+    display:grid; grid-template-columns:2.6em minmax(0,1fr) auto;
+    align-items:baseline; width:100%; min-height:44px;
+    padding:9px 0; text-align:left;
+  }
+  .pipe__tog::after{
+    content:'+'; font-family:var(--font-mono); font-size:13px;
+    color:var(--orchid); padding-left:var(--s-4);
+  }
+  .pipe__stage.is-open .pipe__tog::after{ content:'\2212'; }
+  .pipe__stage.is-open .pipe__b{
+    display:block; max-width:none; margin:-2px 0 0 2.6em; padding-bottom:14px;
+    font-size:.9rem; line-height:1.55;
+    animation:stageIn 260ms var(--ease-out);
+  }
+  .pipe .prob__counters{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:var(--s-5) var(--s-4);
+  }
+
+  /* ---- 05 the report ---------------------------------------------------
+     The three counts were a column of three; as a row they read as one
+     tally, the way the report itself lays them out, and give back 70px. */
+  .rep__frags{
+    grid-auto-flow:row; grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:var(--s-3); margin:var(--s-4) 0 var(--s-5);
+  }
+  .rep__frag{ flex-direction:column; align-items:flex-start; gap:6px; }
+  .rep__frag b{ font-size:clamp(1.5rem, 7vw, 1.85rem); line-height:.9; }
+  .rep__frag span{ line-height:1.3; }
+
+  /* ---- 06 evidence and 08 local: spec rows ------------------------------
+     Three columns at 340px squeezed the value into a wrapped middle column
+     between a key and a status. A spec sheet on a phone reads key and status
+     on one line, the value under them at full width. */
+  .arch__row{ grid-template-columns:minmax(0,1fr) auto; gap:4px var(--s-4); }
+  .arch__k{ grid-column:1; grid-row:1; }
+  .arch__p{ grid-column:2; grid-row:1; text-align:right; }
+  .arch__v{ grid-column:1 / -1; grid-row:2; font-size:.9rem; line-height:1.45; }
+
+  /* ---- 07 practice ----------------------------------------------------- */
+  .prac__note{ margin-top:var(--s-3); }
+
+  /* ---- 09 research -----------------------------------------------------
+     The three figures used to fall 1-then-2 because one label was long.
+     Now the comparison is the layout: graph and board-only side by side,
+     the pass rate under them, and each figure draws its own bar so 99.7
+     against 34.8 is seen before it is read. Solid fills, no gradients: the
+     linear-gradient() below is only how CSS spells a sized solid block. */
+  #research .prob__counters{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:var(--s-5) var(--s-4);
+  }
+  #research .met:nth-child(3){ grid-column:1 / -1; }
+  #research .met::after{
+    content:''; display:block; height:2px; margin-top:6px;
+    background:
+      linear-gradient(var(--bar,var(--text-secondary)),var(--bar,var(--text-secondary)))
+        0 0 / var(--w,0%) 100% no-repeat,
+      var(--hairline);
+    transition:background-size 900ms var(--ease-out) 180ms;
+  }
+  #research .met:nth-child(1){ --w:99.7%; --bar:var(--text-primary); }
+  #research .met:nth-child(2){ --w:34.8%; }
+  #research .met:nth-child(3){ --w:78%; --bar:var(--orchid); }
+  html.has-reveal #research .met.rvl:not(.is-in)::after{ background-size:0 100%, auto; }
+
+  /* ---- 10 get praxis ---------------------------------------------------- */
+  .dl__send{ margin-top:var(--s-5); }
+  .dlg{ gap:var(--s-5); }
+
+  /* ---- 11 end ----------------------------------------------------------- */
+  .end__row{ margin-top:var(--s-6); gap:var(--s-3); }
+  .end__row .m-only{ display:contents; }
+
+  /* ---- captures you can open --------------------------------------------
+     js/phone.js makes each visible capture a button and adds this tag. Same
+     shape as the app's badges: 2px corners, a hairline, mono caps. */
+  .shot[role="button"]{ cursor:zoom-in; -webkit-tap-highlight-color:transparent; }
+  .shot[role="button"]:active{ opacity:.82; }
+  .shot__zoom{
+    position:absolute; right:8px; bottom:8px; z-index:2; pointer-events:none;
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--text-primary);
+    padding:4px 7px; border-radius:var(--r-badge);
+    background:rgba(12,11,10,.86); border:1px solid var(--hairline);
+  }
+
+  html.is-lb-open,html.is-lb-open body{ overflow:hidden; }
+  .lb{
+    position:fixed; inset:0; z-index:500;
+    display:flex; flex-direction:column;
+    background:var(--canvas-deep);
+    padding-top:env(safe-area-inset-top, 0px);
+    animation:menuIn 200ms var(--ease-out);
+  }
+  .lb[hidden]{ display:none; }
+  .lb__bar{
+    display:flex; align-items:center; gap:var(--s-2); flex:none;
+    height:var(--header-h); padding:0 var(--gutter);
+    border-bottom:1px solid var(--hairline);
+  }
+  .lb__cap{
+    flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--text-secondary);
+  }
+  .lb__btn{
+    min-height:44px; min-width:44px; padding:0 14px;
+    font-family:var(--font-mono); font-size:11px; font-weight:700;
+    letter-spacing:.12em; text-transform:uppercase;
+    border:1px solid var(--hairline); border-radius:var(--r-btn);
+    color:var(--text-primary);
+  }
+  .lb__btn[data-lb-close]{ border-color:var(--hairline-lit); color:var(--orchid); }
+  .lb__pane{
+    flex:1 1 auto; min-height:0; overflow:auto;
+    overscroll-behavior:contain; touch-action:pan-x pan-y pinch-zoom;
+  }
+  /* Close to the capture's own size: 1600 of its 1920px, which puts the
+     app's 13px interface text at about 11px - readable, and still a screen
+     you can find your way around. Fit shows the whole frame at once. */
+  .lb__img{ width:1600px; max-width:none; height:auto; }
+  .lb.is-fit .lb__pane{ display:flex; align-items:center; }
+  .lb.is-fit .lb__img{ width:100%; }
+  .lb__hint{
+    flex:none; padding:12px var(--gutter) calc(12px + env(safe-area-inset-bottom, 0px));
+    border-top:1px solid var(--hairline);
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--text-secondary);
+  }
+
+  /* ---- reveal timing ----------------------------------------------------
+     The reveal's stagger is per arrival batch now (js/reveal.js), so the
+     step can be a little longer without anything waiting on its own. */
+  html.has-reveal .rvl{ transition-delay:calc(var(--i,0) * 70ms); }
+}
+
+/* Short phones in landscape (667x375 and the like are still under 760). The
+   first screen is a strip; the board would push the claim off it. */
+@media (max-width:760px) and (max-height:480px){
+  #hero .scene__pin{ padding-top:calc(var(--header-h) + var(--s-5)); }
+  .pboard{ width:min(44vh, 13rem); }
+  .menu__link{ padding:8px 0; font-size:1.35rem; }
+}
+
+@keyframes menuIn{ from{ opacity:0; transform:translateY(-6px); } }
+@keyframes stageIn{ from{ opacity:0; transform:translateY(-4px); } }
 
 @media (prefers-reduced-motion:reduce){
   html.has-reveal .rvl{ opacity:1; transform:none; transition:none; }
+  #research .met::after{ transition:none; }
 }
