@@ -172,18 +172,20 @@
               </div>
 
               <div class="hero__shot">
-                <!-- THE IDEA, NOT THE EVIDENCE. This slot used to hold a crop
-                     of the game-analysis capture, which is the product's proof
-                     but read as a cramped window at hero size. The og-image
-                     already said the idea in one picture: a board with one
-                     marked square. js/heroboard.js builds it and walks the
-                     square through a knight's tour, one jump every 2.4 s, with
-                     a fading trail: one square, again and again, becoming a
-                     shape. The analysis capture still appears in scene 05. -->
+                <!-- THE IDEA, AS A STORY. js/heroboard.js plays four short games in
+                     which the opponent's knight lands on c2 and forks the king
+                     on e1 and the rook on a1. Each fork leaves marks; marks
+                     that come back get brighter; then the pieces go and the
+                     marks join into the shape. Stockfish flags the move,
+                     Praxis finds the pattern. Every position is a real, legal
+                     one (tools/check-hero.js proves it with chess.js). The
+                     caption below is the finding, so the board makes sense
+                     with JavaScript off and is what reduced motion shows. -->
                 <div class="pboard" data-pboard role="img"
-                     aria-label="A dark chessboard with one square marked in orchid. The mark jumps like a knight from square to square, leaving a fading trail."></div>
+                     aria-label="Animated example on a chessboard. In four games, the opponent's knight lands on c2, checking the king on e1 and attacking the rook on a1. Each fork leaves a mark, the same squares light up again and again, and the board ends on the pattern Praxis finds: knight forks on c2."></div>
                 <p class="micro-label pboard__read" aria-hidden="true">
-                  <span class="m-cut"><span data-pboard-sq>e5</span> <span class="dim2">//</span> a knight's path</span><span class="m-only" hidden>A move is a square <span class="dim2">//</span> a habit is a shape</span>
+                  <span class="pboard__l" data-pboard-l1>Pattern &middot; knight forks on <span class="pboard__san">c2</span></span>
+                  <span class="pboard__l" data-pboard-l2>Example &middot; 9 of 31 games</span>
                 </p>
               </div>
             </div>
@@ -250,7 +252,7 @@
                    saying so once costs a line and makes the whole grid land. -->
               <div class="prob__many at at--out" style="--s0:.64;--inv:9">
                 <p class="prob__key at at--fade" style="--s0:.17;--inv:12">
-                  Every time you played it <span class="dim2">//</span>
+                  One pattern, different moves <span class="dim2">//</span>
                   game <span class="dim2">·</span> move <span class="dim2">·</span> what it cost you
                 </p>
                 <p class="mvf at" style="--s0:.20;--inv:9"><i>g412</i><b>Nxd5</b><s>−2.3</s></p>
@@ -262,7 +264,7 @@
                 <p class="mvf at" style="--s0:.32;--inv:9"><i>g318</i><b>Rxe5</b><s>−2.4</s></p>
                 <p class="mvf at" style="--s0:.34;--inv:9"><i>g301</i><b>Nxc6</b><s>−2.8</s></p>
                 <p class="mvf at" style="--s0:.36;--inv:9"><i>g288</i><b>Bxf2</b><s>−3.4</s></p>
-                <p class="mvf at" style="--s0:.38;--inv:9"><i>g274</i><b>Nxd5</b><s>−2.2</s></p>
+                <p class="mvf at" style="--s0:.38;--inv:9"><i>g274</i><b>Bxe6</b><s>−2.2</s></p>
                 <p class="mvf at" style="--s0:.40;--inv:9"><i>g259</i><b>Qxe4</b><s>−1.8</s></p>
                 <p class="mvf at" style="--s0:.42;--inv:9"><i>g241</i><b>Nxf6</b><s>−2.7</s></p>
                 <p class="mvf at" style="--s0:.44;--inv:9"><i>g226</i><b>Rxd4</b><s>−2.1</s></p>
@@ -387,7 +389,7 @@
       <section class="scene" id="pipeline" data-len="2.4" aria-label="How it works">
         <div class="scene__pin">
           <div class="scene__in scene__in--wide">
-            <p class="rule" style="margin-bottom:var(--s-6)"><span><span class="rule__n">04 / </span><span class="m-cut">Six stages. The engine decides; models only put it in words</span><span class="m-only" hidden>Six stages <span class="dim2">//</span> tap one to open it</span></span></p>
+            <p class="rule" style="margin-bottom:var(--s-6)"><span><span class="rule__n">03 / </span><span class="m-cut">Six stages. The engine decides; models only put it in words</span><span class="m-only" hidden>Six stages <span class="dim2">//</span> tap one to open it</span></span></p>
 
             <div class="pipe">
               <div class="pipe__feed">
@@ -451,7 +453,7 @@
                   <span class="met at at--fade" style="--s0:.60;--inv:12">
                     <b class="met__v">3</b><span class="met__l">written per game</span></span>
                   <span class="met at at--fade" style="--s0:.80;--inv:12">
-                    <b class="met__v"><span>0</span></b><span class="met__l">models deciding severity</span></span>
+                    <b class="met__v"><span>5·10·20</span></b><span class="met__l" title="Points of winning chance lost: 5 inaccuracy, 10 mistake, 20 blunder">win-% drop sets severity</span></span>
                 </div>
               </div>
             </div>
@@ -514,7 +516,7 @@
           <div class="scene__in scene__in--wide">
             <div class="local">
               <div>
-                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">06 / </span>Evidence</span></p>
+                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">05 / </span>Evidence</span></p>
                 <h2 class="t-big">A claim needs<br />a fact <span class="pink">behind it</span>.</h2>
                 <p class="t-read m-cut" style="margin-top:var(--s-5)">
                   Language models write fluent chess nonsense. So Praxis computes the
@@ -577,7 +579,7 @@
       <section class="scene" id="practice" data-len="2.6" aria-label="From analysis to practice">
         <div class="scene__pin">
           <div class="scene__in scene__in--wide">
-            <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">07 / </span>Analysis becomes practice<span class="m-cut"> <span class="dim2">//</span> screens show demo data</span></span></p>
+            <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">06 / </span>Analysis becomes practice<span class="m-cut"> <span class="dim2">//</span> screens show demo data</span></span></p>
 
             <div class="prac">
               <!-- EACH CAPTURE AND ITS WORD ARE ONE CELL.
@@ -649,7 +651,7 @@
           <div class="scene__in scene__in--wide">
             <div class="local">
               <div>
-                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">08 / </span>Where it runs</span></p>
+                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">07 / </span>Where it runs</span></p>
                 <h2 class="t-mega">On your<br />machine.<br /><span class="pink">By default.</span></h2>
                 <p class="t-read m-cut" style="margin-top:var(--s-5)">
                   The engine, the models and the database are processes on your
@@ -715,8 +717,8 @@
           <div class="scene__in scene__in--wide">
             <div class="dlg">
               <div>
-                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">09 / </span>Research</span></p>
-                <h2 class="t-big">Can a 2B model<br />explain <span class="pink">truthfully</span>?</h2>
+                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">08 / </span>Research</span></p>
+                <h2 class="t-big">99.7% of its claims true.<br />We still ship the <span class="pink">rules</span>.</h2>
                 <p class="t-note m-cut" style="margin-top:var(--s-4)">
                   Qwen3.5 2B and 4B, fine-tuned with LoRA on the same answers, with
                   only the input changing: the bare board, engine numbers, a flat fact
@@ -775,79 +777,132 @@
       </section>
 
       <!-- ================================================================
-           10 · GET IT
+           09 · INSTALL
+           What Docker does, drawn as it happens. On the desktop build the
+           scene's own --p drives the timeline: each bar fills in order, and
+           its LENGTH is its share of the real download, so the chart is also
+           the answer to "where do the 8.5 GB go". It is labelled as a
+           timeline, not a live installer, because it is not one.
+           js/install.js only re-times it when a toggle changes; the motion
+           itself is CSS. Without JS the defaults below are complete.
+           On a phone: four static steps and one stacked bar.
            =============================================================== -->
-      <section class="scene" id="download" data-len="1.6" aria-label="Download">
+      <section class="scene" id="download" data-len="2.2" aria-label="Install">
         <div class="scene__pin">
           <div class="scene__in scene__in--wide">
             <div class="dlg">
               <div>
-                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">10 / </span><span class="m-cut">Run it</span><span class="m-only" hidden>Get Praxis</span></span></p>
-                <h2 class="t-big">Runs from source,<br /><span class="pink">on your machine</span>.</h2>
+                <p class="rule" style="margin-bottom:var(--s-5)"><span><span class="rule__n">09 / </span><span class="m-cut">Install</span><span class="m-only" hidden>Get Praxis</span></span></p>
+                <h2 class="t-big">Three commands.<br /><span class="pink">Docker</span> does the rest.</h2>
                 <p class="t-note m-cut" style="margin-top:var(--s-4)">
-                  There is no installer yet. Clone the repository, start PostgreSQL in
-                  Docker, point it at Stockfish, pull the Ollama models, then start the
-                  backend and the frontend. No account; it needs only your Chess.com
-                  username.
+                  No Java, Node or chess engine to install. Docker builds Praxis with
+                  Stockfish 19 inside, downloads the models, and serves it on this
+                  computer only. No account: open it and enter your Chess.com username.
                 </p>
                 <p class="t-note m-only" hidden style="margin-top:var(--s-4)">
-                  Praxis is a desktop app with no installer yet. Send yourself
-                  the link and set it up on your computer. No account; only
-                  your Chess.com username.
+                  Praxis runs on a computer, with Docker. Send yourself the link and
+                  set it up there. No account; only your Chess.com username.
                 </p>
-                <div class="dl__cta m-cut">
-                  <a class="btn btn--solid" href="https://github.com/Praxis-Chess/Praxis-Chess#getting-started" target="_blank" rel="noopener">Setup guide</a>
+
+                <ol class="ins-m m-only" hidden aria-label="Install steps">
+                  <li><b>01</b><span>Install Docker Desktop</span></li>
+                  <li><b>02</b><span>Clone the repository</span></li>
+                  <li><b>03</b><span class="mono">docker compose -f docker/compose.yaml up -d --build</span></li>
+                  <li><b>04</b><span>Open localhost:8086, enter your username</span></li>
+                </ol>
+                <div class="ins-m__bar m-only" hidden role="img"
+                     aria-label="First download, 8.5 GB: explanations model 4.7 GB, Ask Prax model 2.5 GB, commentary model 1.3 GB">
+                  <i style="flex:4.68"></i><i style="flex:2.5"></i><i style="flex:1.27"></i>
                 </div>
+                <p class="micro-label m-only" hidden style="margin-top:var(--s-3)">
+                  8.5 GB of models <span class="dim2">//</span> 3.8 GB light
+                </p>
+
                 <div class="m-cut" style="margin-top:var(--s-6)">
                   <details class="faq__i">
                     <summary class="faq__q">Does any of my data leave the machine? <i>+</i></summary>
-                    <p class="faq__a">Not by default. The only outbound request is to the
-                      public Chess.com archive endpoint, for games under your own username.
-                      No account, no telemetry. Web research and a cloud model provider are
-                      optional, off until you configure them, and a cloud provider receives
-                      the positions it is asked about.</p>
+                    <p class="faq__a">Not by default. The only outbound requests are to the
+                      public Chess.com archive for games under your own username, and the
+                      one-time model downloads. No account, no telemetry. Web research and a
+                      cloud model provider are optional, off until you configure them, and a
+                      cloud provider receives the positions it is asked about.</p>
                   </details>
                   <details class="faq__i">
                     <summary class="faq__q">Do I need a GPU? <i>+</i></summary>
-                    <p class="faq__a">It helps. Praxis was built and measured on a 4 GB
-                      laptop GPU. Ollama falls back to the CPU without one, which works but
-                      is much slower; Stockfish always runs on the CPU.</p>
+                    <p class="faq__a">It helps. With an NVIDIA card, add the GPU file shown
+                      under Windows · Linux. Docker on a Mac cannot use the GPU, so on a Mac
+                      the models run in Ollama installed natively. Without a GPU the models
+                      run on the CPU, which works but is much slower; Stockfish always runs
+                      on the CPU.</p>
                   </details>
                   <details class="faq__i">
-                    <summary class="faq__q">Can I use a different engine or model? <i>+</i></summary>
-                    <p class="faq__a">It is built and tested with Stockfish. The explanation
-                      and report models can be any model Ollama serves; Ask Prax needs one
-                      that supports tool calling. Any OpenAI-compatible provider can also be
-                      configured per feature.</p>
+                    <summary class="faq__q">How do I back up my games? <i>+</i></summary>
+                    <p class="faq__a">One command writes a database dump to a backups
+                      folder: <span class="mono">docker compose -f docker/compose.yaml run --rm backup</span>.
+                      The install guide covers restoring, upgrading and uninstalling.</p>
                   </details>
                 </div>
               </div>
 
-              <div>
-                <div class="dl__rows">
-                  <a class="dl__row" href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">
-                    <span class="dl__i">01</span>
-                    <span class="dl__n">Source</span>
-                    <span class="dl__m">GitHub · MIT licence</span>
-                    <span class="dl__go">GitHub →</span>
-                  </a>
-                  <a class="dl__row" href="https://github.com/Praxis-Chess/Praxis-Chess#getting-started" target="_blank" rel="noopener">
-                    <span class="dl__i">02</span>
-                    <span class="dl__n">Setup guide</span>
-                    <span class="dl__m">Docker, Stockfish, Ollama, then two servers</span>
-                    <span class="dl__go">Read →</span>
-                  </a>
-                  <a class="dl__row m-cut" href="https://huggingface.co/praxis-chess/praxis-chess-reasoner-qwen3.5-2b-GGUF" target="_blank" rel="noopener">
-                    <span class="dl__i">03</span>
-                    <span class="dl__n">Commentary model</span>
-                    <span class="dl__m">Hugging Face · ready to run in Ollama</span>
-                    <span class="dl__go">Open →</span>
-                  </a>
+              <div class="ins m-cut" data-install>
+                <div class="ins__opts">
+                  <div class="ins__seg" role="group" aria-label="Your computer">
+                    <button type="button" data-os="gpu" aria-pressed="true">Windows · Linux, NVIDIA</button>
+                    <button type="button" data-os="mac" aria-pressed="false">Mac</button>
+                    <button type="button" data-os="cpu" aria-pressed="false">No GPU</button>
+                  </div>
+                  <div class="ins__seg" role="group" aria-label="Models">
+                    <button type="button" data-set="standard" aria-pressed="true">Standard</button>
+                    <button type="button" data-set="light" aria-pressed="false">Light</button>
+                  </div>
                 </div>
-                <p class="micro-label m-cut" style="margin-top:var(--s-5)">
-                  JDK 21+ <span class="dim2">//</span> Docker <span class="dim2">//</span>
-                  Stockfish <span class="dim2">//</span> Node.js <span class="dim2">//</span>
-                  Ollama <span class="dim2">//</span> ~8 GB for the default models
+
+                <p class="ins__pre" data-ins-pre hidden>First: install Ollama from ollama.com and start it.</p>
+                <ol class="ins__cmds">
+                  <li><code>git clone https://github.com/Praxis-Chess/Praxis-Chess.git</code>
+                    <button type="button" class="ins__copy" data-copy="git clone https://github.com/Praxis-Chess/Praxis-Chess.git"><span data-label>copy</span></button></li>
+                  <li><code>cd Praxis-Chess</code>
+                    <button type="button" class="ins__copy" data-copy="cd Praxis-Chess"><span data-label>copy</span></button></li>
+                  <li><code data-ins-up>docker compose -f docker/compose.yaml -f docker/compose.gpu.yaml up -d --build</code>
+                    <button type="button" class="ins__copy" data-ins-copy data-copy="docker compose -f docker/compose.yaml -f docker/compose.gpu.yaml up -d --build"><span data-label>copy</span></button></li>
+                </ol>
+                <p class="ins__pre" data-ins-light hidden>Light set: copy <span class="mono">docker/.env.example</span> to <span class="mono">docker/.env</span> and uncomment its two light-set lines first.</p>
+
+                <p class="micro-label ins__k"><span>What <span class="mono">up</span> does <span class="dim2">//</span> length = share of download</span><span class="ins__hint" aria-hidden="true">scroll to run it ↓</span></p>
+                <ul class="ins__rows">
+                  <li class="ins__row at" data-row="db" style="--s0:.08;--inv:20">
+                    <span class="ins__n">database<small>PostgreSQL</small></span><span class="ins__t" style="--w:.08"><i></i></span>
+                    <span class="ins__v">ready<b>✓</b></span></li>
+                  <li class="ins__row at" data-row="app" style="--s0:.12;--inv:12">
+                    <span class="ins__n">app<small>Stockfish 19 inside</small></span><span class="ins__t" style="--w:.14"><i></i></span>
+                    <span class="ins__v">built<b>✓</b></span></li>
+                  <li class="ins__row at" data-row="qwen2.5:7b" data-gb="4.68" style="--s0:.22;--inv:3.4">
+                    <span class="ins__n">qwen2.5:7b<small>explanations, reports</small></span><span class="ins__t" style="--w:1"><i></i></span>
+                    <span class="ins__v">4.7 GB<b>✓</b></span></li>
+                  <li class="ins__row at" data-row="qwen3:4b-instruct" data-gb="2.5" style="--s0:.515;--inv:6.4">
+                    <span class="ins__n">qwen3:4b-instruct<small>Ask Prax</small></span><span class="ins__t" style="--w:.534"><i></i></span>
+                    <span class="ins__v">2.5 GB<b>✓</b></span></li>
+                  <li class="ins__row at" data-row="praxis-grid-2b-r3" data-gb="1.27" style="--s0:.672;--inv:12.6">
+                    <span class="ins__n">praxis-grid-2b-r3<small>checked commentary, trained for Praxis</small></span><span class="ins__t" style="--w:.271"><i></i></span>
+                    <span class="ins__v">1.3 GB<b>✓</b></span></li>
+                </ul>
+                <p class="ins__done at at--fade" style="--s0:.78;--inv:8">
+                  → open <span class="mono">localhost:8086</span>, then Settings → Player
+                </p>
+
+                <div class="ins__foot">
+                  <label class="ins__speed">At
+                    <input type="number" inputmode="numeric" min="1" max="10000" step="1" value="50" data-ins-speed aria-label="Your download speed in megabits per second" />
+                    Mbit/s
+                  </label>
+                  <span class="ins__total" data-ins-total aria-live="polite">8.5 GB of models ≈ 23 min of download</span>
+                </div>
+                <p class="ins__links micro-label">
+                  <a href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">Source · MIT</a>
+                  <span class="dim2">//</span>
+                  <a href="https://github.com/Praxis-Chess/Praxis-Chess/blob/main/docker/INSTALL.md" target="_blank" rel="noopener">Install guide</a>
+                  <span class="dim2">//</span>
+                  <a href="https://huggingface.co/praxis-chess/praxis-chess-reasoner-qwen3.5-2b-GGUF" target="_blank" rel="noopener">Commentary model</a>
                 </p>
               </div>
             </div>
@@ -856,7 +911,7 @@
       </section>
 
       <!-- ================================================================
-           09 · THE END
+           10 · THE END
            =============================================================== -->
       <section class="scene" id="end" data-len="1.2" aria-label="Get Praxis">
         <div class="scene__pin">
@@ -872,7 +927,7 @@
                 Find out what they <span class="pink">keep teaching you</span>.
               </p>
               <div class="end__row at at--fade" style="--s0:.30;--inv:4">
-                <a class="btn btn--solid m-cut" href="https://github.com/Praxis-Chess/Praxis-Chess#getting-started" target="_blank" rel="noopener">Get Praxis</a>
+                <a class="btn btn--solid m-cut" href="/#download">Get Praxis</a>
                 <a class="btn btn--quiet" href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">Read the source</a>
               </div>
             </div>
@@ -937,7 +992,7 @@
   var mobile = document.documentElement.classList.contains('is-mobile');
   var list = ['lifecycle', 'isolate', 'dormancy', 'nav', 'board', 'heroboard', 'copy',
               'shots', 'strip', 'a11y', 'fps']
-    .concat(mobile ? ['reveal', 'phone'] : ['scroll'])
+    .concat(mobile ? ['reveal', 'phone'] : ['scroll', 'install'])
     .concat(['boot']);
   for (var i = 0; i < list.length; i++) {
     var s = document.createElement('script');
