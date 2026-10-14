@@ -593,25 +593,149 @@ html.is-moved .hint{ opacity:0; }
 .hero__shot .shot{ aspect-ratio:16 / 10; }
 
 /* The hero board (js/heroboard.js). Square, hairline gaps of the page's own
-   canvas between the squares, exactly as the og-image draws them. The trail
-   is an inset wash rather than a second colour, so it reads the same on a
-   light and a dark square. */
+   canvas between the squares, exactly as the og-image draws them. It plays
+   four games' worth of one knight fork and then the pattern they make; see
+   the script for the story. Everything here reads existing tokens: the board
+   pair, the orchid, the text greys. The marks are an inset wash of the orchid
+   at an alpha the script sets (--heat), so they read the same on a light and
+   a dark square and never become a second colour. */
 .pboard{
+  position:relative;
+  /* Glyphs are sized off the board's own width (cqw), so a piece is the
+     same fraction of its square on a 266px phone board and a 544px desktop
+     one, with no resize handler. */
+  container-type:inline-size;
   display:grid; grid-template-columns:repeat(8, 1fr); gap:2px; padding:2px;
   width:min(100%, 34rem); aspect-ratio:1 / 1; max-width:100%;
   margin-left:auto; background:var(--canvas);
 }
 .pboard__sq{
-  display:block; background:var(--pboard-dark);
-  transition:background-color .7s ease, box-shadow .7s ease;
+  position:relative; display:block; background:var(--pboard-dark);
+  /* The squares are <i> elements, which every browser italicises by default.
+     Empty squares never showed it; a piece glyph inherits it, and since no
+     chess-symbol font has an italic, the browser fakes one by slanting the
+     piece. */
+  font-style:normal;
+  box-shadow:inset 0 0 0 100vmax rgba(231,166,214,var(--heat, 0));
+  transition:background-color .3s ease, box-shadow .45s ease;
 }
 .pboard__sq.is-light{ background:var(--pboard-light); }
-.pboard__sq.is-on{ background:var(--orchid); }
-.pboard__sq.is-t1{ box-shadow:inset 0 0 0 100vmax rgba(231,166,214,.34); }
-.pboard__sq.is-t2{ box-shadow:inset 0 0 0 100vmax rgba(231,166,214,.18); }
-.pboard__sq.is-t3{ box-shadow:inset 0 0 0 100vmax rgba(231,166,214,.08); }
-.pboard__read{ margin-top:var(--s-3); text-align:right; font-variant-numeric:tabular-nums; }
-@media (prefers-reduced-motion: reduce){ .pboard__sq{ transition:none; } }
+/* The fork square: a pulse when the knight lands, solid at the reveal. */
+.pboard__sq.is-hit,.pboard__sq.is-on{ background:var(--orchid); }
+
+/* Pieces sit out of flow inside their square, so a glyph can never change a
+   row's height: the board does not move while the loop runs. */
+.pboard__pc{
+  position:absolute; inset:0; display:grid; place-items:center;
+  /* Above every square, not just the ones before it: the squares are
+     positioned too, so they paint in grid order, and a knight sliding from e3
+     to c2 crosses d2, which comes later in the grid and would cover it. */
+  z-index:2;
+  font-size:8.6cqw; line-height:1; pointer-events:none; user-select:none;
+  opacity:0;
+  transition:opacity .15s ease, transform .4s var(--ease-out);
+}
+.pboard__pc.is-in{ opacity:1; }
+.pboard__pc.is-ctx.is-in{ opacity:.4; }
+.pboard__pc[data-c="w"]{ color:var(--text-primary); }
+/* A black piece on a near-black board: dark fill, grey outline. The fill
+   alone (as js/board.js draws it on the light analysis board) disappears
+   here. */
+.pboard__pc[data-c="b"]{
+  color:var(--canvas-deep);
+  -webkit-text-stroke:1px var(--text-secondary);
+}
+/* The knight is the actor, and it crosses dark squares on its way in: its
+   outline is the light grey, so it never drops out mid-slide. */
+.pboard__pc[data-c="b"]:not(.is-ctx){ -webkit-text-stroke-color:var(--text-primary); }
+
+/* The lines: the fork's two prongs, and at the reveal the knight's ways into
+   the square. pathLength="1" on each line lets one dash animate any of them. */
+.pboard__fx{
+  position:absolute; inset:0; width:100%; height:100%;
+  z-index:1;   /* over the squares, under the pieces */
+  pointer-events:none; overflow:visible;
+}
+.pboard__fx line{
+  fill:none; stroke:var(--orchid); stroke-linecap:round;
+  stroke-dasharray:1; stroke-dashoffset:1;
+  /* The overlay's viewBox is the board in pixels; non-scaling keeps a
+     1px wire 1px if the board is resized mid-frame. */
+  vector-effect:non-scaling-stroke;
+  transition:stroke-dashoffset .45s var(--ease-out), opacity .3s ease;
+}
+.pboard__fx line.is-drawn{ stroke-dashoffset:0; }
+.pboard__fx .is-fork{ stroke-width:1.5; opacity:.9; }
+.pboard__fx .is-spoke{ stroke-width:1; opacity:.45; }
+
+/* The reveal's instrument marks. All one colour: the orchid at different
+   weights. Each scales in about its own centre (fill-box), except the
+   brackets, which the script points at c2 so all four close on it. */
+.pboard__fx .fx-node,.pboard__fx .fx-bead{
+  fill:var(--orchid); opacity:0;
+  transform:scale(.3); transform-box:fill-box; transform-origin:center;
+  transition:opacity .25s ease, transform .35s var(--ease-out);
+}
+.pboard__fx .fx-node.is-in{ opacity:1; transform:none; }
+/* Beads sit on the wire brighter than the wire itself, so a faint spoke
+   still reads as a line of points. */
+.pboard__fx .fx-bead.is-in{ opacity:.85; transform:none; }
+.pboard__fx .fx-ring{
+  fill:none; stroke:var(--orchid); stroke-width:1; vector-effect:non-scaling-stroke;
+  opacity:0; transform:scale(.5); transform-box:fill-box; transform-origin:center;
+  transition:opacity .35s ease, transform .5s var(--ease-out);
+}
+.pboard__fx .fx-ring.is-in{ opacity:.4; transform:none; }
+.pboard__fx .fx-tick{
+  fill:none; stroke:var(--orchid); stroke-width:1.5; stroke-linecap:square;
+  vector-effect:non-scaling-stroke;
+  opacity:0; transform:scale(1.45);
+  transition:opacity .3s ease, transform .5s var(--ease-out);
+}
+.pboard__fx .fx-tick.is-in{ opacity:1; transform:none; }
+/* Driven by the Web Animations API (the pulses loop until the fade); at
+   rest they are invisible, so a pulse waiting on its delay shows nothing. */
+.pboard__fx .fx-pulse{ fill:var(--orchid); opacity:0; }
+.pboard__fx .fx-ripple{
+  fill:none; stroke:var(--orchid); stroke-width:1; vector-effect:non-scaling-stroke;
+  transform-box:fill-box; transform-origin:center; opacity:0;
+}
+.pboard__fx .is-gone{ opacity:0 !important; transition:opacity .3s ease; }
+
+/* The caption: two lines, always reserved, so a short label and a long one
+   leave the page in the same place. Chess tokens keep their real case. */
+.pboard__read{
+  margin-top:var(--s-3); text-align:right; font-variant-numeric:tabular-nums;
+  min-height:3em;
+}
+.pboard__l{ display:block; transition:opacity .15s ease; }
+.pboard__l:first-child{ color:var(--text-secondary); }
+.pboard__read.is-swap .pboard__l{ opacity:0; }
+.pboard__san{ text-transform:none; letter-spacing:.02em; }
+
+@media (prefers-reduced-motion: reduce){
+  .pboard__sq,.pboard__pc,.pboard__fx *,.pboard__l{ transition:none; }
+}
+
+/* KEEP CLEAR OF THE RAIL. The section rail is fixed to the viewport's right
+   edge and hangs off the page gutter: its line, gap and label reach about
+   117px in from the gutter when hovering shows every label. The board is
+   right-aligned to that same gutter, so at 1280 and 1440 its h-file sat
+   under the rail.
+
+   The content is centred at 1420px wide, so its right edge is
+   50vw + min(50vw, 710px) - gutter, and the rail starts at
+   100vw - gutter - lane. The overlap is therefore
+   lane - max(0, 50vw - 710px): the gutter cancels out, and on a wide screen
+   (about 1690px and up) the push is zero and nothing changes. The lane is
+   the 117px plus a 19px breath. If .scene__in--wide's 1420px ever changes,
+   the 710px here changes with it. Tablet and phone hide the rail labels and
+   centre the board, so this is desktop only. */
+@media (min-width:1081px){
+  .hero__shot{ --rail-push:max(0px, calc(136px - max(0px, 50vw - 710px))); }
+  .pboard{ width:min(100% - var(--rail-push), 34rem); margin-right:var(--rail-push); }
+  .pboard__read{ margin-right:var(--rail-push); }
+}
 
 /* ==========================================================================
    8 · SCENE 02 — THE PROBLEM
@@ -864,7 +988,7 @@ html.is-moved .hint{ opacity:0; }
 .arch__row--out .arch__k{ color:var(--orchid); }
 
 /* ==========================================================================
-   14 · SCENE 08 — DOWNLOAD
+   14 · SCENE 09 — INSTALL
    An installation panel, not a pricing table.
    ========================================================================== */
 .dlg{
@@ -889,6 +1013,75 @@ html.is-moved .hint{ opacity:0; }
 .dl__row:hover .dl__go{ color:var(--orchid); }
 .dl__cta{ margin-top:var(--s-6); }
 .dl__cta .btn{ font-size:1rem; padding:15px 26px; }
+
+/* ---- the install timeline ------------------------------------------------
+   Each .ins__row is an .at element: --a is how far its download has got in
+   this scene, and the bar is a scaleX of it. The TRACK's width is --w, the
+   row's share of the largest download, so lengths compare across rows.
+   js/install.js sets --w, --s0 and --inv; the inline defaults are the
+   standard set, so the panel is complete without it. */
+.ins{ display:flex; flex-direction:column; gap:var(--s-4); min-width:0;
+      /* Clear of the scene rail, whose labels sit at the right edge at
+         exactly the height of these rows. */
+      padding-right:84px; }
+.ins__opts{ display:flex; flex-wrap:wrap; gap:var(--s-3); }
+.ins__seg{ display:inline-flex; border:1px solid var(--hairline); border-radius:999px; padding:2px; }
+.ins__seg button{
+  font:inherit; font-family:var(--font-mono); font-size:10px; letter-spacing:var(--track-micro);
+  text-transform:uppercase; color:var(--text-secondary); background:none; border:0;
+  padding:6px 12px; border-radius:999px; cursor:pointer;
+  transition:background var(--dur-fast), color var(--dur-fast);
+}
+.ins__seg button:hover{ color:var(--text-primary); }
+.ins__seg button[aria-pressed="true"]{ background:var(--accent-wash); color:var(--orchid); }
+.ins__seg button:focus-visible{ outline:1px solid var(--orchid); outline-offset:1px; }
+.ins__pre{ font-size:var(--t-small); color:var(--text-secondary); }
+.ins__cmds{ list-style:none; margin:0; padding:0; border:1px solid var(--hairline);
+            border-radius:10px; background:var(--surface-1); }
+.ins__cmds li{ display:flex; align-items:center; gap:var(--s-3); padding:8px 10px 8px 14px; }
+.ins__cmds li + li{ border-top:1px solid var(--hairline); }
+.ins__cmds code{ flex:1; min-width:0; font-family:var(--font-mono); font-size:11.5px;
+                 color:var(--text-primary); overflow-wrap:anywhere; }
+.ins__cmds code::before{ content:"$ "; color:var(--text-tertiary); }
+.ins__copy{ font-family:var(--font-mono); font-size:9px; letter-spacing:var(--track-micro);
+            text-transform:uppercase; color:var(--text-tertiary); background:none;
+            border:1px solid var(--hairline); border-radius:6px; padding:4px 8px; cursor:pointer; }
+.ins__copy:hover{ color:var(--orchid); border-color:var(--orchid); }
+.ins__copy.is-done{ color:var(--orchid); }
+.ins__k{ margin-top:var(--s-2); display:flex; flex-wrap:wrap; justify-content:space-between; gap:var(--s-1) var(--s-3); }
+.ins__k > span{ white-space:nowrap; }
+/* Arriving by the "Get Praxis" link lands at the start of the scene, bars
+   empty; this says why, and is gone after the first tenth of the scroll. */
+.ins__hint{ color:var(--orchid); opacity:calc(1 - clamp(0, calc(var(--p) * 10), 1)); }
+/* One grid for all rows (subgrid), so every bar's track starts and ends at
+   the same x: per-row grids let a longer label squeeze its own bar, and the
+   lengths stopped being comparable. */
+.ins__rows{ list-style:none; margin:0; padding:0; display:grid; row-gap:9px; column-gap:var(--s-3);
+            grid-template-columns:minmax(8rem,11rem) minmax(0,1fr) auto; }
+.ins__row{ display:grid; grid-template-columns:subgrid; grid-column:1 / -1;
+           align-items:center; font-family:var(--font-mono); font-size:10.5px; }
+.ins__row[hidden]{ display:none; }
+.ins__n{ color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ins__n small{ display:block; font-size:9px; letter-spacing:var(--track-micro); text-transform:uppercase;
+               color:var(--text-tertiary); overflow:hidden; text-overflow:ellipsis; }
+.ins__t{ position:relative; height:6px; width:calc(var(--w,1) * 100%); min-width:10px;
+         border-radius:3px; background:var(--hairline); overflow:hidden; }
+.ins__t i{ position:absolute; inset:0; background:var(--orchid); border-radius:inherit;
+           transform-origin:left center; transform:scaleX(var(--a)); }
+.ins__v{ color:var(--text-secondary); white-space:nowrap; text-align:right; }
+.ins__v b{ margin-left:6px; color:var(--orchid); font-weight:400;
+           opacity:clamp(0, calc((var(--a) - .97) * 34), 1); }
+.ins__done{ font-size:var(--t-small); color:var(--text-secondary); }
+.ins__foot{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s-3) var(--s-4);
+            border-top:1px solid var(--hairline); padding-top:var(--s-3);
+            font-size:var(--t-small); color:var(--text-secondary); }
+.ins__speed input{ width:5.5em; font:inherit; font-family:var(--font-mono); color:var(--text-primary);
+                   background:var(--surface-1); border:1px solid var(--hairline); border-radius:6px;
+                   padding:3px 6px; margin-inline:4px; }
+.ins__speed input:focus-visible{ outline:1px solid var(--orchid); }
+.ins__total{ font-family:var(--font-mono); font-size:11px; color:var(--text-primary); }
+.ins__links{ display:flex; flex-wrap:wrap; gap:var(--s-2) var(--s-3); }
+.ins__links a:hover{ color:var(--orchid); }
 
 /* ==========================================================================
    15 · SCENE 09 — THE END

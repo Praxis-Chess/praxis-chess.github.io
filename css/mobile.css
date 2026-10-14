@@ -742,6 +742,25 @@
   html.has-reveal .rvl{ transition-delay:calc(var(--i,0) * 70ms); }
 }
 
+/* 09 - Install, phone build. The desktop timeline is cut (it is driven by
+   the accumulator, which a phone does not have, and nobody installs Docker
+   from a phone). Four steps and one stacked bar of where the download goes,
+   all static: no module, so nothing to add to the MOBILE allowlist. */
+@media (max-width:760px){
+  ol.ins-m{ list-style:none; margin:var(--s-5) 0 0; padding:0;
+            border-top:1px solid var(--hairline); }
+  .ins-m li{ display:grid; grid-template-columns:2.2rem minmax(0,1fr); gap:var(--s-3);
+             align-items:baseline; padding-block:10px; border-bottom:1px solid var(--hairline);
+             font-size:var(--t-small); color:var(--text-primary); }
+  .ins-m b{ font-family:var(--font-mono); font-size:9px; font-weight:400; color:var(--orchid);
+            letter-spacing:var(--track-micro); }
+  .ins-m .mono{ font-family:var(--font-mono); font-size:10.5px; overflow-wrap:anywhere; }
+  .ins-m__bar.m-only{ display:flex; gap:3px; height:6px; margin-top:var(--s-4); }
+  .ins-m__bar i{ border-radius:3px; background:var(--orchid); }
+  .ins-m__bar i:nth-child(2){ opacity:.65; }
+  .ins-m__bar i:nth-child(3){ opacity:.4; }
+}
+
 /* Short phones in landscape (667x375 and the like are still under 760). The
    first screen is a strip; the board would push the claim off it. */
 @media (max-width:760px) and (max-height:480px){
@@ -756,4 +775,93 @@
 @media (prefers-reduced-motion:reduce){
   html.has-reveal .rvl{ opacity:1; transform:none; transition:none; }
   #research .met::after{ transition:none; }
+}
+
+
+/* ==========================================================================
+   VERTICAL RHYTHM - phone only.
+
+   Taken from skimp.rabugotra.com, measured at 390x844 in mobile Chrome, where
+   every section reads as one clear step: a small label, the headline tucked
+   right under it, the description close to the headline, then real air
+   before the content, and a generous gap before the next section. Praxis had
+   the same parts in the same order but uneven steps between them (20, 28,
+   20, 16, 12px) and only ~40px between sections, so sections ran into each
+   other and a headline sat as far from its own description as from the next
+   block.
+
+   The steps, as Skimp spaces them:
+
+       label        -> headline        12px   --rh-label
+       headline     -> description     16px   --rh-desc     (also desc -> desc)
+       description  -> content         32px   --rh-content  (list, table, metrics, buttons)
+       statement    -> statement       48px   --rh-group    (two ideas inside one section)
+       section      -> section        128px   --rh-sec x2   (64 below, hairline, 64 above)
+
+   LITERAL PIXELS, NOT THE --s-* SCALE. The --s-* tokens are redefined by the
+   desktop build's height tiers, which also match short phones, so a rhythm
+   built on them would quietly tighten on an iPhone SE. These do not move.
+
+   !important appears only where the markup carries an inline margin
+   (style="margin-top:var(--s-5)") that this layer has to win against.
+   Everything here sits inside the phone query; nothing reaches desktop.
+   ========================================================================== */
+@media (max-width:760px){
+  :root{
+    --rh-label:12px;
+    --rh-desc:16px;
+    --rh-content:32px;
+    --rh-group:48px;
+    --rh-sec:64px;
+  }
+
+  /* ---- between sections ------------------------------------------------ */
+  .scene__pin{ padding-block:var(--rh-sec); }
+  /* The hero keeps its own top (header plus a composed first screen); only
+     its bottom joins the rhythm. */
+
+  /* 02 + 03 stay one thought (see "03 joins 02" above): no section break
+     between them, just the gap between two statements in one section. */
+  #problem .scene__pin{ padding-bottom:var(--rh-group); }
+  #difference .scene__pin{ padding-top:0; }
+
+  /* ---- label -> headline ---------------------------------------------- */
+  .rule{ margin-bottom:var(--rh-label) !important; }
+  .prob__said{ margin-top:0 !important; }
+
+  /* ---- headline -> description, description -> description ------------ */
+  .t-read,.t-note{ margin-top:var(--rh-desc) !important; }
+  .prob__one .mvf{ margin-top:0 !important; }   /* the readout is the headline's description; the flex gap is 16 */
+  .end .t-big.m-only{ margin-top:var(--rh-desc) !important; }
+
+  /* Descriptions read more easily with Skimp's leading. */
+  .t-read{ line-height:1.62; }
+  .t-note{ line-height:1.6; }
+
+  /* ---- description -> content ------------------------------------------ */
+  .hero__cta{ margin-top:var(--rh-content); }
+  .hero__meta{ margin-top:20px; }               /* claims belong to the buttons above them */
+  .local,.dlg{ gap:var(--rh-content); }         /* intro block -> its table or link list */
+  #research .prob__counters{ margin-top:var(--rh-content) !important; }
+  #research .prob__counters + .t-note{ margin-top:var(--rh-content) !important; }
+  #download ol.ins-m{ margin-top:var(--rh-content); }
+  .end__row{ margin-top:var(--rh-content); }
+
+  /* ---- statement -> statement, inside one section ---------------------- */
+  .hero{ gap:var(--rh-group); }                 /* claim and buttons -> the board */
+  .prob__stage{ gap:var(--rh-group); }          /* the blunder -> the pattern -> the count */
+  .rep__frags{ margin-bottom:0; }
+  .rep__say{ margin-top:var(--rh-group); }      /* the evidence -> what it means */
+  .end__foot{ margin-top:var(--rh-group); }
+
+  /* ---- content -> its footnote ----------------------------------------- */
+  .arch > .micro-label{ margin-top:var(--rh-desc) !important; }
+  .prac__note{ margin-top:var(--rh-desc); }
+
+  /* ---- list rows ---------------------------------------------------------
+     Skimp's list items breathe: about 16px of padding and 8px between a
+     title and its text. The spec rows were 10px and 4px, which made four
+     rows read as one dense block. */
+  .arch__row{ padding-block:14px; row-gap:6px; }
+  .prac{ gap:24px; }
 }
