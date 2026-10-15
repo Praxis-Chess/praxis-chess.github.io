@@ -1,0 +1,383 @@
+{
+ "_about": "The website's demo game (index.html scenes 02, 03 and 04). The reader is Black. Generated with Stockfish 18 at depth 18 by a club-strength self-play script; evalBefore and eval are Black's point of view in pawns, before and after each Black move. Severity is Praxis's own rule (MistakeCandidateFilter): win% drop of 5 / 10 / 20 for inaccuracy / mistake / blunder. Checked by tools/check-demo.js.",
+ "game": "412",
+ "timeControl": "10+0",
+ "player": "black",
+ "depth": 18,
+ "result": "1-0",
+ "termination": "Black resigned",
+ "san": [
+  "e4",
+  "e5",
+  "Nf3",
+  "Nc6",
+  "Bc4",
+  "Nf6",
+  "Ng5",
+  "d5",
+  "exd5",
+  "Nxd5",
+  "Nxf7",
+  "Kxf7",
+  "Qf3+",
+  "Ke6",
+  "Nc3",
+  "Nb4",
+  "d4",
+  "Nxc2+",
+  "Kf1",
+  "c6",
+  "Qe4",
+  "b5",
+  "Bxd5+",
+  "cxd5",
+  "Qxc2",
+  "Qc7",
+  "Qd1",
+  "Qc4+",
+  "Kg1",
+  "b4",
+  "Ne2",
+  "Ba6",
+  "Ng3",
+  "h5",
+  "Qf3",
+  "g6",
+  "Bg5",
+  "Be7",
+  "Rc1",
+  "Qxd4",
+  "Rc6+",
+  "Kd7",
+  "Rxa6",
+  "Bxg5",
+  "Qf7+",
+  "Be7",
+  "h3",
+  "Rhf8",
+  "Qe6+",
+  "Kd8",
+  "Ra5",
+  "Ke8",
+  "Qxg6+",
+  "Kd7",
+  "Ra6",
+  "Qxf2+",
+  "Kh2",
+  "Rf6",
+  "Rxf6",
+  "Bxf6",
+  "Qf7+",
+  "Kd8",
+  "Qxd5+",
+  "Ke8",
+  "Qxa8+",
+  "Bd8"
+ ],
+ "black": [
+  {
+   "move": 1,
+   "san": "e5",
+   "best": "e5",
+   "evalBefore": -0.2,
+   "eval": -0.3,
+   "drop": 0.4,
+   "severity": null
+  },
+  {
+   "move": 2,
+   "san": "Nc6",
+   "best": "Nc6",
+   "evalBefore": -0.3,
+   "eval": -0.2,
+   "drop": -0.4,
+   "severity": null
+  },
+  {
+   "move": 3,
+   "san": "Nf6",
+   "best": "Nf6",
+   "evalBefore": -0.2,
+   "eval": -0.3,
+   "drop": 0.4,
+   "severity": null
+  },
+  {
+   "move": 4,
+   "san": "d5",
+   "best": "d5",
+   "evalBefore": -0.3,
+   "eval": -0.2,
+   "drop": -1.1,
+   "severity": null
+  },
+  {
+   "move": 5,
+   "san": "Nxd5",
+   "best": "Na5",
+   "evalBefore": -0.3,
+   "eval": -0.9,
+   "drop": 6.3,
+   "severity": "INACCURACY"
+  },
+  {
+   "move": 6,
+   "san": "Kxf7",
+   "best": "Kxf7",
+   "evalBefore": -0.8,
+   "eval": -0.7,
+   "drop": -0.5,
+   "severity": null
+  },
+  {
+   "move": 7,
+   "san": "Ke6",
+   "best": "Ke6",
+   "evalBefore": -0.7,
+   "eval": -0.7,
+   "drop": -0.1,
+   "severity": null
+  },
+  {
+   "move": 8,
+   "san": "Nb4",
+   "best": "Nb4",
+   "evalBefore": -0.7,
+   "eval": -0.8,
+   "drop": 1.4,
+   "severity": null
+  },
+  {
+   "move": 9,
+   "san": "Nxc2+",
+   "best": "Nxc2+",
+   "evalBefore": -0.0,
+   "eval": 0.0,
+   "drop": -0.2,
+   "severity": null
+  },
+  {
+   "move": 10,
+   "san": "c6",
+   "best": "c6",
+   "evalBefore": 0.0,
+   "eval": 0.0,
+   "drop": 0.0,
+   "severity": null
+  },
+  {
+   "move": 11,
+   "san": "b5",
+   "best": "Nxd4",
+   "evalBefore": 0.0,
+   "eval": -0.6,
+   "drop": 5.4,
+   "severity": "INACCURACY"
+  },
+  {
+   "move": 12,
+   "san": "cxd5",
+   "best": "cxd5",
+   "evalBefore": -0.6,
+   "eval": -0.5,
+   "drop": -1.1,
+   "severity": null
+  },
+  {
+   "move": 13,
+   "san": "Qc7",
+   "best": "Kf7",
+   "evalBefore": -0.5,
+   "eval": -0.7,
+   "drop": 2.3,
+   "severity": null
+  },
+  {
+   "move": 14,
+   "san": "Qc4+",
+   "best": "Qc4+",
+   "evalBefore": -0.8,
+   "eval": -0.7,
+   "drop": -0.1,
+   "severity": null
+  },
+  {
+   "move": 15,
+   "san": "b4",
+   "best": "b4",
+   "evalBefore": 1.1,
+   "eval": 1.2,
+   "drop": -1.4,
+   "severity": null
+  },
+  {
+   "move": 16,
+   "san": "Ba6",
+   "best": "Ba6",
+   "evalBefore": 1.2,
+   "eval": 1.1,
+   "drop": 1.1,
+   "severity": null
+  },
+  {
+   "move": 17,
+   "san": "h5",
+   "best": "Qxd4",
+   "evalBefore": 1.1,
+   "eval": 0.0,
+   "drop": 9.8,
+   "severity": "INACCURACY"
+  },
+  {
+   "move": 18,
+   "san": "g6",
+   "best": "Qd3",
+   "evalBefore": 0.0,
+   "eval": -1.7,
+   "drop": 15.4,
+   "severity": "MISTAKE"
+  },
+  {
+   "move": 19,
+   "san": "Be7",
+   "best": "Be7",
+   "evalBefore": -2.4,
+   "eval": -2.6,
+   "drop": 1.7,
+   "severity": null
+  },
+  {
+   "move": 20,
+   "san": "Qxd4",
+   "best": "Bxg5",
+   "evalBefore": -3.1,
+   "eval": -3.3,
+   "drop": 1.3,
+   "severity": null
+  },
+  {
+   "move": 21,
+   "san": "Kd7",
+   "best": "Kd7",
+   "evalBefore": -3.6,
+   "eval": -3.6,
+   "drop": 0.1,
+   "severity": null
+  },
+  {
+   "move": 22,
+   "san": "Bxg5",
+   "best": "Bxg5",
+   "evalBefore": -3.6,
+   "eval": -3.7,
+   "drop": 0.6,
+   "severity": null
+  },
+  {
+   "move": 23,
+   "san": "Be7",
+   "best": "Be7",
+   "evalBefore": -3.8,
+   "eval": -3.8,
+   "drop": 0.2,
+   "severity": null
+  },
+  {
+   "move": 24,
+   "san": "Rhf8",
+   "best": "Rhf8",
+   "evalBefore": -3.8,
+   "eval": -3.8,
+   "drop": -0.1,
+   "severity": null
+  },
+  {
+   "move": 25,
+   "san": "Kd8",
+   "best": "Kd8",
+   "evalBefore": -3.8,
+   "eval": -3.9,
+   "drop": 0.2,
+   "severity": null
+  },
+  {
+   "move": 26,
+   "san": "Ke8",
+   "best": "Ke8",
+   "evalBefore": -3.8,
+   "eval": -3.9,
+   "drop": 0.4,
+   "severity": null
+  },
+  {
+   "move": 27,
+   "san": "Kd7",
+   "best": "Kd7",
+   "evalBefore": -2.2,
+   "eval": -2.1,
+   "drop": -0.4,
+   "severity": null
+  },
+  {
+   "move": 28,
+   "san": "Qxf2+",
+   "best": "Qxf2+",
+   "evalBefore": -1.7,
+   "eval": -1.9,
+   "drop": 1.1,
+   "severity": null
+  },
+  {
+   "move": 29,
+   "san": "Rf6",
+   "best": "Rf6",
+   "evalBefore": -1.8,
+   "eval": -1.8,
+   "drop": 0.0,
+   "severity": null
+  },
+  {
+   "move": 30,
+   "san": "Bxf6",
+   "best": "Qxf6",
+   "evalBefore": 0.0,
+   "eval": -7.4,
+   "drop": 43.9,
+   "severity": "BLUNDER"
+  },
+  {
+   "move": 31,
+   "san": "Kd8",
+   "best": "Kd8",
+   "evalBefore": -7.8,
+   "eval": -7.8,
+   "drop": 0.1,
+   "severity": null
+  },
+  {
+   "move": 32,
+   "san": "Ke8",
+   "best": "Ke8",
+   "evalBefore": -8.3,
+   "eval": -11.1,
+   "drop": 2.9,
+   "severity": null
+  },
+  {
+   "move": 33,
+   "san": "Bd8",
+   "best": "Kf7",
+   "evalBefore": -69.2,
+   "eval": -10.0,
+   "drop": -2.5,
+   "severity": null
+  }
+ ],
+ "example": {
+  "move": 30,
+  "evalBefore": 0.0,
+  "clockSeconds": 24,
+  "materialLost": "rook"
+ },
+ "engine": "Stockfish 18"
+}
