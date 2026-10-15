@@ -568,11 +568,40 @@ html.is-moved .hint{ opacity:0; }
 .hero__l2{ margin-top:.05em; }
 .hero__cta{ margin-top:var(--s-6); display:flex; gap:var(--s-3); flex-wrap:wrap; }
 .hero__meta{ margin-top:var(--s-6); display:flex; gap:var(--s-6); flex-wrap:wrap; }
-/* The one line in the hero that leaves the product for the research. Set as
-   a label, not a button: it is news, and the two buttons above are the
-   actions. */
-.hero__new{ display:inline-block; margin-top:var(--s-4); color:var(--orchid); text-decoration:none; }
-.hero__new:hover,.hero__new:focus-visible{ text-decoration:underline; text-underline-offset:3px; }
+/* The one line in the hero that leaves the product for the research. An
+   announcement strip, not a button: it is news, and the two buttons above
+   are the actions. So it borrows the button's hairline and corner but stays
+   in the label's type: a solid "New" chip with a slow live dot, the news in
+   the light grey, and an arrow that leans forward on hover. Text wraps
+   inside the strip at tablet widths rather than running off it. */
+.hero__new{
+  display:inline-flex; align-items:center; gap:var(--s-3);
+  max-width:100%; margin-top:var(--s-5);
+  padding:5px 14px 5px 5px;
+  color:var(--text-primary); text-decoration:none;
+  background:var(--accent-wash);
+  border:1px solid var(--hairline-lit); border-radius:var(--r-btn);
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.hero__new:hover,.hero__new:focus-visible{ background:rgba(231,166,214,.2); border-color:var(--orchid); }
+.hero__new-tag{
+  flex:none; display:inline-flex; align-items:center; gap:6px;
+  padding:4px 8px; border-radius:calc(var(--r-btn) - 2px);
+  background:var(--orchid); color:var(--canvas); font-weight:600;
+}
+.hero__new-tag::before{
+  content:""; width:5px; height:5px; border-radius:50%;
+  background:var(--canvas);
+  animation:newDot 2.4s ease-in-out infinite;
+}
+.hero__new-txt{ min-width:0; }
+.hero__new-go{ flex:none; color:var(--orchid); transition:transform var(--dur-fast) var(--ease-out); }
+.hero__new:hover .hero__new-go,.hero__new:focus-visible .hero__new-go{ transform:translateX(3px); }
+@keyframes newDot{ 50%{ opacity:.25; } }
+@media (prefers-reduced-motion: reduce){
+  .hero__new-tag::before{ animation:none; }
+  .hero__new-go{ transition:none; }
+}
 .hero__shot{
   position:relative; z-index:1;
   transform:translate3d(0, calc(var(--p) * -21vh), 0);
@@ -593,12 +622,13 @@ html.is-moved .hint{ opacity:0; }
 .hero__shot .shot{ aspect-ratio:16 / 10; }
 
 /* The hero board (js/heroboard.js). Square, hairline gaps of the page's own
-   canvas between the squares, exactly as the og-image draws them. It plays
-   four games' worth of one knight fork and then the pattern they make; see
-   the script for the story. Everything here reads existing tokens: the board
-   pair, the orchid, the text greys. The marks are an inset wash of the orchid
-   at an alpha the script sets (--heat), so they read the same on a light and
-   a dark square and never become a second colour. */
+   canvas between the squares, exactly as the og-image draws them. It plays a
+   reel of seven tactics, each a mistake, the move that punishes it and the
+   motif's shape; see the script for the story. Everything here reads
+   existing tokens: the board pair, the orchid, the text greys. The square
+   marks are the orchid at alphas the script sets, an inset wash (--heat)
+   and a 1px outline (--ring), so they read the same on a light and a dark
+   square and never become a second colour. */
 .pboard{
   position:relative;
   /* Glyphs are sized off the board's own width (cqw), so a piece is the
@@ -616,12 +646,12 @@ html.is-moved .hint{ opacity:0; }
      chess-symbol font has an italic, the browser fakes one by slanting the
      piece. */
   font-style:normal;
-  box-shadow:inset 0 0 0 100vmax rgba(231,166,214,var(--heat, 0));
+  box-shadow:
+    inset 0 0 0 1px rgba(231,166,214,var(--ring, 0)),
+    inset 0 0 0 100vmax rgba(231,166,214,var(--heat, 0));
   transition:background-color .3s ease, box-shadow .45s ease;
 }
 .pboard__sq.is-light{ background:var(--pboard-light); }
-/* The fork square: a pulse when the knight lands, solid at the reveal. */
-.pboard__sq.is-hit,.pboard__sq.is-on{ background:var(--orchid); }
 
 /* Pieces sit out of flow inside their square, so a glyph can never change a
    row's height: the board does not move while the loop runs. */
@@ -645,12 +675,19 @@ html.is-moved .hint{ opacity:0; }
   color:var(--canvas-deep);
   -webkit-text-stroke:1px var(--text-secondary);
 }
-/* The knight is the actor, and it crosses dark squares on its way in: its
-   outline is the light grey, so it never drops out mid-slide. */
-.pboard__pc[data-c="b"]:not(.is-ctx){ -webkit-text-stroke-color:var(--text-primary); }
+/* A black piece in the story crosses dark squares as it moves, so its edge
+   is the light grey and it never drops out mid-slide. A glow, not a
+   brighter stroke: the filled glyphs draw their inner details as cut-outs,
+   a stroke runs round every one of those too, and at full strength it
+   covered so much of the piece that a black king read as a white one. */
+.pboard__pc[data-c="b"]:not(.is-ctx){
+  -webkit-text-stroke:0;
+  text-shadow:0 0 1px var(--text-primary), 0 0 1px var(--text-primary);
+}
 
-/* The lines: the fork's two prongs, and at the reveal the knight's ways into
-   the square. pathLength="1" on each line lets one dash animate any of them. */
+/* The lines: what a move does as it lands (threat), the motif's shape at
+   the payoff (wire), and a defence that is about to be taken away (guard).
+   pathLength="1" on each line lets one dash animate any of them. */
 .pboard__fx{
   position:absolute; inset:0; width:100%; height:100%;
   z-index:1;   /* over the squares, under the pieces */
@@ -665,12 +702,18 @@ html.is-moved .hint{ opacity:0; }
   transition:stroke-dashoffset .45s var(--ease-out), opacity .3s ease;
 }
 .pboard__fx line.is-drawn{ stroke-dashoffset:0; }
-.pboard__fx .is-fork{ stroke-width:1.5; opacity:.9; }
-.pboard__fx .is-spoke{ stroke-width:1; opacity:.45; }
+.pboard__fx .is-threat{ stroke-width:1.5; opacity:.9; }
+.pboard__fx .is-wire{ stroke-width:1.25; opacity:.75; }
+/* Dashed, and there from the start: no draw-in, just a fade. */
+.pboard__fx line.is-guard{
+  stroke-width:1; stroke-dasharray:.03 .04; stroke-dashoffset:0; opacity:0;
+}
+.pboard__fx line.is-guard.is-in{ opacity:.5; }
 
-/* The reveal's instrument marks. All one colour: the orchid at different
+/* The payoff's instrument marks. All one colour: the orchid at different
    weights. Each scales in about its own centre (fill-box), except the
-   brackets, which the script points at c2 so all four close on it. */
+   brackets, which the script points at the key square so all four close
+   on it. */
 .pboard__fx .fx-node,.pboard__fx .fx-bead{
   fill:var(--orchid); opacity:0;
   transform:scale(.3); transform-box:fill-box; transform-origin:center;
@@ -693,6 +736,15 @@ html.is-moved .hint{ opacity:0; }
   transition:opacity .3s ease, transform .5s var(--ease-out);
 }
 .pboard__fx .fx-tick.is-in{ opacity:1; transform:none; }
+/* An escape square that is gone. Under the pieces like the rest, so it is
+   only ever put on an empty square. */
+.pboard__fx .fx-x{
+  fill:none; stroke:var(--orchid); stroke-width:1.5; stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
+  opacity:0; transform:scale(.4); transform-box:fill-box; transform-origin:center;
+  transition:opacity .25s ease, transform .4s var(--ease-out);
+}
+.pboard__fx .fx-x.is-in{ opacity:.9; transform:none; }
 /* Driven by the Web Animations API (the pulses loop until the fade); at
    rest they are invisible, so a pulse waiting on its delay shows nothing. */
 .pboard__fx .fx-pulse{ fill:var(--orchid); opacity:0; }
@@ -709,9 +761,23 @@ html.is-moved .hint{ opacity:0; }
   min-height:3em;
 }
 .pboard__l{ display:block; transition:opacity .15s ease; }
-.pboard__l:first-child{ color:var(--text-secondary); }
+.pboard__l:first-child,.pboard__ticks + .pboard__l{ color:var(--text-secondary); }
 .pboard__read.is-swap .pboard__l{ opacity:0; }
 .pboard__san{ text-transform:none; letter-spacing:.02em; }
+/* Where the reel is: one tick per motif, the current one lit. They sit in
+   the gap between the board and the caption (the negative margins cancel
+   their height exactly), so they add nothing to the page. Inline blocks, so
+   they follow the caption's alignment: right here, centred on a phone. */
+.pboard__ticks{
+  display:block; height:2px; line-height:0; font-size:0;
+  margin:calc(var(--s-3) / -2 - 1px) 0 calc(var(--s-3) / 2 - 1px);
+}
+.pboard__ticks i{
+  display:inline-block; width:10px; height:2px; margin-left:4px;
+  background:var(--hairline); transition:background-color .3s ease;
+}
+.pboard__ticks i.is-on{ background:var(--orchid); }
+.pboard__ticks.is-still{ visibility:hidden; }
 
 @media (prefers-reduced-motion: reduce){
   .pboard__sq,.pboard__pc,.pboard__fx *,.pboard__l{ transition:none; }
@@ -995,6 +1061,16 @@ html.is-moved .hint{ opacity:0; }
   display:grid; grid-template-columns:minmax(0,.5fr) minmax(0,.5fr);
   gap:clamp(24px,5vw,80px); align-items:end;
 }
+/* INSTALL: TOP-ALIGNED, NOT BOTTOM. The section label sits at the top of the
+   left column, and bottom alignment only keeps the right column under it
+   while the right column is the shorter one. The install panel is the
+   taller one (toggles, three commands, five download rows, the speed
+   readout), so bottom alignment pushed its top above "09 / Install", by
+   about 50px at 1280x800 and more on a short window. Aligned to the top, the
+   panel always starts level with the label, whatever its height. Research
+   keeps the bottom alignment on purpose: its links belong at the foot of
+   the statement. */
+#download .dlg{ align-items:start; }
 .dl__row{
   display:grid; grid-template-columns:auto minmax(0,1fr) auto auto;
   gap:var(--s-4); align-items:baseline;
