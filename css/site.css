@@ -499,6 +499,8 @@ html.is-moved .hint{ opacity:0; }
 .mvf i{ font-style:normal; color:var(--text-tertiary); }
 .mvf s{ text-decoration:none; color:var(--loss); font-weight:700; }
 .mvf s.good{ color:var(--gain); }
+/* An inaccuracy is flagged, not lost: it stays in the feed but in grey. */
+.mvf s.mild{ color:var(--text-secondary); font-weight:400; }
 .mvf--lg{ font-size:clamp(13px,1.05vw,16px); gap:14px; }
 
 /* ---- a metric ----------------------------------------------------------- */

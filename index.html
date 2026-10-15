@@ -219,9 +219,9 @@
 
               <!-- (a) one move, alone -->
               <div class="prob__one at at--out" style="--s0:.13;--inv:6">
-                <p class="micro-label m-cut">Example <span class="dim2">//</span> game 412 <span class="dim2">//</span> rapid 10+0 <span class="dim2">//</span> move 5</p>
+                <p class="micro-label m-cut">Example <span class="dim2">//</span> game 412 <span class="dim2">//</span> rapid 10+0 <span class="dim2">//</span> move 30</p>
                 <!-- THE HEADLINE IS THE CONSEQUENCE, NOT THE NOTATION.
-                     This used to be the word `Nxd5` set at display size, which
+                     This used to be the move itself set at display size, which
                      is the single most important line in the scene and is
                      unreadable to anyone who has not played chess seriously:
                      it is a piece, a capture and a square compressed into four
@@ -234,11 +234,11 @@
                      evaluation swing, the severity and the clock are all still
                      on screen, in the monospace the rest of the page uses for
                      instrument readings. It reads the way the product works:
-                     the engine hands you `Nxd5 -2.3`, and the plain meaning of
+                     the engine hands you `Bxf6 -7.4`, and the plain meaning of
                      that is what you actually needed. -->
-                <p class="t-big prob__said" style="margin-top:var(--s-3)">You just lost a piece.</p>
+                <p class="t-big prob__said" style="margin-top:var(--s-3)">You just lost a rook.</p>
                 <p class="mvf mvf--lg" style="justify-content:center;margin-top:var(--s-4)">
-                  <b>Nxd5</b><i>eval</i><b>+0.1 → −2.3</b><s>blunder</s><i>0.7s left</i>
+                  <b>30…Bxf6</b><i>eval</i><b>0.0 → −7.4</b><s>blunder</s><i>0:24 left</i>
                 </p>
                 <p class="t-note m-cut" style="margin-top:var(--s-4);max-width:34ch">
                   An engine can tell you this move was wrong. It is right, it is
@@ -249,14 +249,14 @@
               <!-- (b) the same mistake, over and over.
                    The caption exists because these rows are unreadable to
                    anyone who has not used an engine before: eighteen lines of
-                   `g412 Nxd5 −2.3` are a game number, a move and a score, and
+                   `g412 Bxf6 −7.4` are a game number, a move and a score, and
                    saying so once costs a line and makes the whole grid land. -->
               <div class="prob__many at at--out" style="--s0:.64;--inv:9">
                 <p class="prob__key at at--fade" style="--s0:.17;--inv:12">
                   One pattern, different moves <span class="dim2">//</span>
                   game <span class="dim2">·</span> move <span class="dim2">·</span> what it cost you
                 </p>
-                <p class="mvf at" style="--s0:.20;--inv:9"><i>g412</i><b>Nxd5</b><s>−2.3</s></p>
+                <p class="mvf at" style="--s0:.20;--inv:9"><i>g412</i><b>Bxf6</b><s>−7.4</s></p>
                 <p class="mvf at" style="--s0:.22;--inv:9"><i>g398</i><b>Nxe4</b><s>−1.9</s></p>
                 <p class="mvf at" style="--s0:.24;--inv:9"><i>g377</i><b>Bxc3</b><s>−2.6</s></p>
                 <p class="mvf at" style="--s0:.26;--inv:9"><i>g361</i><b>Nxd4</b><s>−3.1</s></p>
@@ -343,12 +343,11 @@
               <div class="diff__engine">
                 <p class="rule"><span>Standard engine analysis</span></p>
                 <div class="diff__list">
-                  <p class="mvf at" style="--s0:.05;--inv:8"><i>05</i><b>Nxd5</b><s>−2.4</s></p>
-                  <p class="mvf at" style="--s0:.09;--inv:8"><i>12</i><b>Re8</b><i>−0.2</i></p>
-                  <p class="mvf at" style="--s0:.13;--inv:8"><i>19</i><b>h6</b><i>−0.4</i></p>
-                  <p class="mvf at m-cut" style="--s0:.17;--inv:8"><i>23</i><b>Ra8+</b><s>−1.6</s></p>
-                  <p class="mvf at m-cut" style="--s0:.21;--inv:8"><i>28</i><b>Kg7</b><i>−0.1</i></p>
-                  <p class="mvf at m-cut" style="--s0:.25;--inv:8"><i>34</i><b>Bd6</b><s>−9.1</s></p>
+                  <p class="mvf at" style="--s0:0.05;--inv:8"><i>5…</i><b>Nxd5</b><i>−0.9</i></p>
+                  <p class="mvf at m-cut" style="--s0:0.09;--inv:8"><i>11…</i><b>b5</b><i>−0.6</i></p>
+                  <p class="mvf at m-cut" style="--s0:0.13;--inv:8"><i>17…</i><b>h5</b><i>0.0</i></p>
+                  <p class="mvf at" style="--s0:0.17;--inv:8"><i>18…</i><b>g6</b><s>−1.7</s></p>
+                  <p class="mvf at" style="--s0:0.21;--inv:8"><i>30…</i><b>Bxf6</b><s>−7.4</s></p>
                 </div>
                 <p class="t-note m-cut" style="margin-top:var(--s-5)">
                   Correct, and finished with you the moment you close the tab. It
@@ -386,6 +385,12 @@
            04 · HOW IT WORKS
            The left column loses rows as you travel; the right names what is
            left. The page does the condensing it is describing.
+           THE GAME IS REAL. Scenes 02, 03 and 04 all show one legal game,
+           tools/demo-game.json: the reader is Black, every number is
+           Stockfish's at depth 18 from Black's side, and the rows that stay
+           are exactly the moves Praxis's own rule flags (win% drop of 5, 10,
+           20). tools/check-demo.js replays it with chess.js and fails if a
+           row here stops matching it.
            =============================================================== -->
       <section class="scene" id="pipeline" data-len="2.4" aria-label="How it works">
         <div class="scene__pin">
@@ -395,28 +400,29 @@
             <div class="pipe">
               <div class="pipe__feed">
                 <div class="pipe__rows">
-                  <p class="mvf at" style="--s0:.06;--inv:10"><i>01</i><b>e4</b><i>+0.3</i></p>
-                  <p class="mvf at" style="--s0:.08;--inv:10"><i>02</i><b>Nf3</b><i>+0.2</i></p>
-                  <p class="mvf at" style="--s0:.10;--inv:10"><i>03</i><b>Bc4</b><i>+0.3</i></p>
-                  <p class="mvf at" style="--s0:.12;--inv:10"><i>04</i><b>Ng5</b><i>+0.1</i></p>
-                  <p class="mvf keeps"><i>05</i><b>Nxd5</b><s>−2.3</s></p>
-                  <p class="mvf at" style="--s0:.16;--inv:10"><i>06</i><b>Nxf7</b><i>+2.4</i></p>
-                  <p class="mvf at" style="--s0:.18;--inv:10"><i>07</i><b>Kxf7</b><i>+2.3</i></p>
-                  <p class="mvf at" style="--s0:.20;--inv:10"><i>08</i><b>Qf3+</b><i>+2.6</i></p>
-                  <p class="mvf at" style="--s0:.22;--inv:10"><i>09</i><b>Ke6</b><i>+2.5</i></p>
-                  <p class="mvf at" style="--s0:.26;--inv:10"><i>10</i><b>Nc3</b><i>+2.7</i></p>
-                  <p class="mvf keeps"><i>12</i><b>Re8</b><s class="good">kept</s></p>
-                  <p class="mvf at" style="--s0:.30;--inv:10"><i>14</i><b>d4</b><i>+2.9</i></p>
-                  <p class="mvf at" style="--s0:.34;--inv:10"><i>17</i><b>Bd2</b><i>+2.8</i></p>
-                  <p class="mvf at" style="--s0:.38;--inv:10"><i>20</i><b>Rad1</b><i>+3.0</i></p>
-                  <p class="mvf keeps"><i>23</i><b>Ra8+</b><s>−1.6</s></p>
-                  <p class="mvf at" style="--s0:.42;--inv:10"><i>26</i><b>h3</b><i>+1.4</i></p>
-                  <p class="mvf at" style="--s0:.46;--inv:10"><i>29</i><b>Kh2</b><i>+1.3</i></p>
-                  <p class="mvf at" style="--s0:.50;--inv:10"><i>31</i><b>Rd7</b><i>+1.5</i></p>
-                  <p class="mvf keeps"><i>34</i><b>Bd6</b><s>−9.1</s></p>
-                  <p class="mvf at" style="--s0:.54;--inv:10"><i>36</i><b>Kg7</b><i>−9.0</i></p>
-                  <p class="mvf at" style="--s0:.58;--inv:10"><i>39</i><b>Rf8</b><i>−9.4</i></p>
-                  <p class="mvf at" style="--s0:.62;--inv:10"><i>41</i><b>Resigns</b><i>n/a</i></p>
+                  <p class="mvf at" style="--s0:0.06;--inv:10"><i>1…</i><b>e5</b><i>−0.3</i></p>
+                  <p class="mvf at" style="--s0:0.09;--inv:10"><i>2…</i><b>Nc6</b><i>−0.2</i></p>
+                  <p class="mvf at" style="--s0:0.12;--inv:10"><i>3…</i><b>Nf6</b><i>−0.3</i></p>
+                  <p class="mvf at" style="--s0:0.15;--inv:10"><i>4…</i><b>d5</b><i>−0.2</i></p>
+                  <p class="mvf keeps"><i>5…</i><b>Nxd5</b><s class="mild">inaccuracy</s></p>
+                  <p class="mvf at" style="--s0:0.18;--inv:10"><i>6…</i><b>Kxf7</b><i>−0.7</i></p>
+                  <p class="mvf at" style="--s0:0.21;--inv:10"><i>7…</i><b>Ke6</b><i>−0.7</i></p>
+                  <p class="mvf at" style="--s0:0.24;--inv:10"><i>8…</i><b>Nb4</b><i>−0.8</i></p>
+                  <p class="mvf at" style="--s0:0.27;--inv:10"><i>9…</i><b>Nxc2+</b><i>0.0</i></p>
+                  <p class="mvf keeps"><i>11…</i><b>b5</b><s class="mild">inaccuracy</s></p>
+                  <p class="mvf at" style="--s0:0.30;--inv:10"><i>14…</i><b>Qc4+</b><i>−0.7</i></p>
+                  <p class="mvf at" style="--s0:0.33;--inv:10"><i>15…</i><b>b4</b><i>+1.2</i></p>
+                  <p class="mvf at" style="--s0:0.36;--inv:10"><i>16…</i><b>Ba6</b><i>+1.1</i></p>
+                  <p class="mvf keeps"><i>17…</i><b>h5</b><s class="mild">inaccuracy</s></p>
+                  <p class="mvf keeps"><i>18…</i><b>g6</b><s>mistake</s></p>
+                  <p class="mvf at" style="--s0:0.39;--inv:10"><i>20…</i><b>Qxd4</b><i>−3.3</i></p>
+                  <p class="mvf at" style="--s0:0.42;--inv:10"><i>22…</i><b>Bxg5</b><i>−3.7</i></p>
+                  <p class="mvf at" style="--s0:0.45;--inv:10"><i>25…</i><b>Kd8</b><i>−3.9</i></p>
+                  <p class="mvf at" style="--s0:0.48;--inv:10"><i>28…</i><b>Qxf2+</b><i>−1.9</i></p>
+                  <p class="mvf at" style="--s0:0.51;--inv:10"><i>29…</i><b>Rf6</b><i>−1.8</i></p>
+                  <p class="mvf keeps"><i>30…</i><b>Bxf6</b><s>blunder</s></p>
+                  <p class="mvf at" style="--s0:0.54;--inv:10"><i>33…</i><b>Bd8</b><i>−10.0</i></p>
+                  <p class="mvf at" style="--s0:0.57;--inv:10"><i>1–0</i><b>Resigned</b><i></i></p>
                 </div>
               </div>
 
