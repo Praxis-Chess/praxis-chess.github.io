@@ -179,7 +179,7 @@ Corners are deliberately sharp, because the app is sharp and that is much of why
 
 ### 4.5 Motion
 
-- **Hero board:** one orchid square walks a knight's tour across a dark 8×8 board, one jump every 2.4 seconds, with a three-square fading trail so the L-shapes become visible. A caption under the board names the current square ("E5 // A KNIGHT'S PATH"). It pauses when off screen or when the tab is hidden. With "reduce motion" switched on it shows a still board with e5 marked.
+- **Hero board:** a looping reel of seven tactics on a dark 8×8 board: fork, hanging piece, skewer, pin, back-rank mate, discovered check, removing the defender. Each clip (about 5 seconds) shows a mistake, the move that punishes it, and the motif's shape locking in as orchid wires, nodes and corner brackets. A two-line caption names the motif ("FORK · ONE MOVE, TWO TARGETS") and builds the moves as they are played; seven small ticks between the board and the caption show where the reel is. It pauses when off screen or when the tab is hidden. With "reduce motion" switched on it shows the fork's finished frame, still.
 - **Nothing else on the mobile page moves.** A scroll-in reveal (fade plus a 12px rise, 520ms, staggered 60ms) is built and loaded, but no element is currently marked to use it (Q12).
 - Interface transitions: 120ms and 220ms, with a fast ease-out.
 
@@ -354,7 +354,7 @@ The cards were added at the owner's request so each screenshot clearly belongs t
 - Label: 08 / WHERE IT RUNS
 - Headline: **"ON YOUR MACHINE. BY DEFAULT."**
 - Body: *"Every part of it is a process on your computer. Web research and cloud models are optional and off by default."*
-- Spec table: ENGINE · Stockfish · subprocess / MODEL · Ollama · :11434 / OUTBOUND · Chess.com, read-only · the only one by default
+- Spec table: MOVE CHECKER · Stockfish finds your mistakes · on your computer / EXPLANATIONS · A local AI explains them in plain words · on your computer / INTERNET · Only to download your Chess.com games · nothing uploaded
 - Footnote: 0 BYTES UPLOADED BY DEFAULT // OPTIONAL: WEB SEARCH, CLOUD MODELS
 
 **Cut on mobile:** three implementation rows (backend, database, interface) and the long descriptions in the remaining rows.

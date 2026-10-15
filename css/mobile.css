@@ -747,18 +747,53 @@
    from a phone). Four steps and one stacked bar of where the download goes,
    all static: no module, so nothing to add to the MOBILE allowlist. */
 @media (max-width:760px){
-  ol.ins-m{ list-style:none; margin:var(--s-5) 0 0; padding:0;
-            border-top:1px solid var(--hairline); }
-  .ins-m li{ display:grid; grid-template-columns:2.2rem minmax(0,1fr); gap:var(--s-3);
-             align-items:baseline; padding-block:10px; border-bottom:1px solid var(--hairline);
-             font-size:var(--t-small); color:var(--text-primary); }
-  .ins-m b{ font-family:var(--font-mono); font-size:9px; font-weight:400; color:var(--orchid);
-            letter-spacing:var(--track-micro); }
-  .ins-m .mono{ font-family:var(--font-mono); font-size:10.5px; overflow-wrap:anywhere; }
-  .ins-m__bar.m-only{ display:flex; gap:3px; height:6px; margin-top:var(--s-4); }
+  /* A stepper: a numbered disc per step, joined by a hairline down the
+     left, so five lines read as one sequence rather than five table rows. */
+  ol.ins-m{ list-style:none; margin:var(--s-5) 0 0; padding:0; }
+  .ins-m > li{
+    position:relative; display:grid; grid-template-columns:24px minmax(0,1fr);
+    gap:var(--s-3); padding-bottom:var(--s-5);
+  }
+  .ins-m > li:last-child{ padding-bottom:0; }
+  .ins-m > li:not(:last-child)::before{
+    content:""; position:absolute; left:11.5px; top:28px; bottom:4px;
+    width:1px; background:var(--hairline-lit);
+  }
+  .ins-m b{
+    display:grid; place-items:center; width:24px; height:24px; border-radius:50%;
+    border:1px solid var(--orchid); color:var(--orchid);
+    font-family:var(--font-mono); font-size:11px; font-weight:400; line-height:1;
+  }
+  .ins-m__t{ font-size:var(--t-small); color:var(--text-primary); line-height:24px; margin:0; }
+  .ins-m__d{ font-size:12.5px; color:var(--text-secondary); line-height:1.5; margin:2px 0 0; }
+  .ins-m .mono{ font-family:var(--font-mono); font-size:11px; }
+  .ins-m__cmd{
+    display:block; margin-top:var(--s-2); padding:10px 12px;
+    font-family:var(--font-mono); font-size:10.5px; line-height:1.5; color:var(--text-primary);
+    background:var(--canvas-deep); border:1px solid var(--hairline); border-radius:var(--r-card);
+    overflow-wrap:break-word;
+  }
+  /* A flag stays whole: Chrome will break "--build" after its dashes. */
+  .ins-m__cmd .nw{ white-space:nowrap; }
+
+  /* Step 3: the two model sets, side by side. */
+  .ins-m__sets{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s-2); margin:var(--s-2) 0 var(--s-2); }
+  .ins-m__set{
+    padding:10px; border:1px solid var(--hairline); border-radius:var(--r-card);
+  }
+  .ins-m__set.is-def{ border-color:var(--hairline-lit); background:var(--accent-wash); }
+  .ins-m__k{
+    margin:0; font-family:var(--font-mono); font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--text-primary);
+  }
+  .ins-m__k span{ display:block; margin-top:2px; font-size:9px; color:var(--orchid); } .ins-m__k span.is-alt{ color:var(--text-tertiary); }
+  .ins-m__gb{ margin:4px 0 8px; font-size:1.15rem; font-weight:600; color:var(--text-primary); line-height:1.1; }
+  .ins-m__bar{ display:flex; gap:2px; height:5px; }
   .ins-m__bar i{ border-radius:3px; background:var(--orchid); }
   .ins-m__bar i:nth-child(2){ opacity:.65; }
   .ins-m__bar i:nth-child(3){ opacity:.4; }
+  .ins-m__bar i.is-gap{ background:var(--hairline); opacity:1; }
+  .ins-m__set .ins-m__d{ margin-top:8px; font-size:11.5px; line-height:1.4; }
 }
 
 /* Short phones in landscape (667x375 and the like are still under 760). The
@@ -864,4 +899,39 @@
      rows read as one dense block. */
   .arch__row{ padding-block:14px; row-gap:6px; }
   .prac{ gap:24px; }
+
+  /* ---- the research strip ------------------------------------------------
+     Full width under the claims, like the buttons above it, and a tap
+     target (44px) rather than a label. The news wraps to two lines on its
+     own; the chip and the arrow stay put beside it. */
+  .hero__new{
+    display:flex; width:100%; min-height:44px;
+    margin-top:var(--rh-desc);
+    padding:6px 12px 6px 6px; gap:10px;
+    line-height:1.45;
+    color:var(--text-primary);    /* the small-label rule above greys every .micro-label */
+  }
+  .hero__new-txt{ flex:1; font-size:10px; letter-spacing:.08em; }
+  /* The chip is a tag on the news, not a second headline: smaller than the
+     text it introduces, so the eye lands on the words. */
+  .hero__new-tag{
+    padding:2px 6px; gap:4px;
+    font-size:9px; letter-spacing:.1em;
+  }
+  .hero__new-tag::before{ width:4px; height:4px; }
+
+  /* ---- the footer ----------------------------------------------------------
+     Four links in a 2 x 2 grid instead of a wrapping row: the row left
+     "Contact" alone on a third line, 44px below the rest, and read as
+     unfinished. Links first, under a hairline, so the footer starts with
+     the things you can tap; the credit closes the page. Every link keeps
+     its 44px target, and the grid's columns line its words up. */
+  .end__foot{ gap:var(--s-4); }
+  .end__foot nav{
+    order:-1; align-self:stretch;
+    display:grid; grid-template-columns:1fr 1fr; gap:0 var(--s-4);
+    border-top:1px solid var(--hairline); padding-top:var(--s-2);
+  }
+  .end__foot nav a{ padding-inline:0; }
+  .end__foot p{ color:var(--text-tertiary); }
 }

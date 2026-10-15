@@ -164,28 +164,29 @@
                   <span class="micro-label">Open source, MIT</span>
                   <span class="micro-label">Local by default</span>
                 </div>
-                <!-- DESKTOP ONLY. The first screen is where a visitor from a post
-                     decides whether to scroll, and the trained model is the newest
-                     thing here. The phone hero is already full (design/mobile, Q1
-                     and Q3), so it is cut there; the menu and footer carry it. -->
-                <a class="hero__new micro-label m-cut" href="/#research">New <span class="dim2">//</span> the model we trained, and its research, are open on Hugging Face →</a>
+                <!-- The first screen is where a visitor from a post decides
+                     whether to scroll, and the trained model is the newest thing
+                     here, so it is shown on every width; on a phone it sits full
+                     width under the claims, as a tap-sized strip. -->
+                <a class="hero__new micro-label" href="/#research"><span class="hero__new-tag">New</span><span class="hero__new-txt"><span class="m-cut">The model we trained, and its research, are open on Hugging Face</span><span class="m-only" hidden>Our model and its research are on Hugging Face</span></span><span class="hero__new-go" aria-hidden="true">→</span></a>
               </div>
 
               <div class="hero__shot">
-                <!-- THE IDEA, AS A STORY. js/heroboard.js plays four short games in
-                     which the opponent's knight lands on c2 and forks the king
-                     on e1 and the rook on a1. Each fork leaves marks; marks
-                     that come back get brighter; then the pieces go and the
-                     marks join into the shape. Stockfish flags the move,
-                     Praxis finds the pattern. Every position is a real, legal
-                     one (tools/check-hero.js proves it with chess.js). The
-                     caption below is the finding, so the board makes sense
-                     with JavaScript off and is what reduced motion shows. -->
+                <!-- THE IDEA, AS A REEL. js/heroboard.js plays seven tactics in
+                     turn: a fork, a hanging piece, a skewer, a pin, a back-rank
+                     mate, a discovered check and removing the defender. Each is
+                     a mistake, the move that punishes it, and the motif's shape
+                     locking in on the board. Every position is a real, legal one
+                     and every tactic works against any defence (tools/check-hero.js
+                     proves it with chess.js). The caption below is the fork's, so
+                     the board makes sense with JavaScript off, and the fork's last
+                     frame is what reduced motion shows. -->
                 <div class="pboard" data-pboard role="img"
-                     aria-label="Animated example on a chessboard. In four games, the opponent's knight lands on c2, checking the king on e1 and attacking the rook on a1. Each fork leaves a mark, the same squares light up again and again, and the board ends on the pattern Praxis finds: knight forks on c2."></div>
+                     aria-label="Animated examples on a chessboard: seven tactics, one after another. A knight fork, a queen taking an unguarded knight, a rook skewer, a pin, a back-rank mate, a discovered check, and removing the defender. Each shows the mistake that allows it, the move that punishes it, and what it wins."></div>
                 <p class="micro-label pboard__read" aria-hidden="true">
-                  <span class="pboard__l" data-pboard-l1>Pattern &middot; knight forks on <span class="pboard__san">c2</span></span>
-                  <span class="pboard__l" data-pboard-l2>Example &middot; 9 of 31 games</span>
+                  <span class="pboard__ticks" data-pboard-ticks></span>
+                  <span class="pboard__l" data-pboard-l1>Fork &middot; one move, two targets</span>
+                  <span class="pboard__l" data-pboard-l2><span class="pboard__san">21&hellip;Qc8? 22.Ne7+! Kh8 23.Nxc8</span></span>
                 </p>
               </div>
             </div>
@@ -672,14 +673,14 @@
                   <span class="arch__p">:8086</span>
                 </div>
                 <div class="arch__row at" style="--s0:.12;--inv:9">
-                  <span class="arch__k">Engine</span>
-                  <span class="arch__v m-cut">Stockfish · a child process on UCI</span><span class="arch__v m-only" hidden>Stockfish</span>
-                  <span class="arch__p">subprocess</span>
+                  <span class="arch__k m-cut">Engine</span><span class="arch__k m-only" hidden>Move checker</span>
+                  <span class="arch__v m-cut">Stockfish · a child process on UCI</span><span class="arch__v m-only" hidden>Stockfish finds your mistakes</span>
+                  <span class="arch__p m-cut">subprocess</span><span class="arch__p m-only" hidden>on your computer</span>
                 </div>
                 <div class="arch__row at" style="--s0:.19;--inv:9">
-                  <span class="arch__k">Model</span>
-                  <span class="arch__v m-cut">Ollama · separate models for explanations and Ask Prax</span><span class="arch__v m-only" hidden>Ollama</span>
-                  <span class="arch__p">:11434</span>
+                  <span class="arch__k m-cut">Model</span><span class="arch__k m-only" hidden>Explanations</span>
+                  <span class="arch__v m-cut">Ollama · separate models for explanations and Ask Prax</span><span class="arch__v m-only" hidden>A local AI explains them in plain words</span>
+                  <span class="arch__p m-cut">:11434</span><span class="arch__p m-only" hidden>on your computer</span>
                 </div>
                 <div class="arch__row m-cut at" style="--s0:.26;--inv:9">
                   <span class="arch__k">Database</span>
@@ -692,9 +693,9 @@
                   <span class="arch__p">:5173</span>
                 </div>
                 <div class="arch__row arch__row--out at" style="--s0:.42;--inv:9">
-                  <span class="arch__k">Outbound</span>
-                  <span class="arch__v m-cut">Chess.com archives · your username, read-only</span><span class="arch__v m-only" hidden>Chess.com, read-only</span>
-                  <span class="arch__p">the only one by default</span>
+                  <span class="arch__k m-cut">Outbound</span><span class="arch__k m-only" hidden>Internet</span>
+                  <span class="arch__v m-cut">Chess.com archives · your username, read-only</span><span class="arch__v m-only" hidden>Only to download your Chess.com games</span>
+                  <span class="arch__p m-cut">the only one by default</span><span class="arch__p m-only" hidden>nothing uploaded</span>
                 </div>
                 <p class="micro-label m-cut" style="margin-top:var(--s-4)">
                   0 bytes uploaded by default <span class="dim2">//</span> optional:
@@ -804,19 +805,32 @@
                   set it up there. No account; only your Chess.com username.
                 </p>
 
+                <!-- PHONE: five numbered steps on a line, so it reads as a sequence and
+                     not a spec table, and the one real choice (which models) is a step
+                     of its own with both options side by side. Each card's bar is drawn
+                     to the same scale, so Light is visibly the smaller download. -->
                 <ol class="ins-m m-only" hidden aria-label="Install steps">
-                  <li><b>01</b><span>Install Docker Desktop</span></li>
-                  <li><b>02</b><span>Clone the repository</span></li>
-                  <li><b>03</b><span class="mono">docker compose -f docker/compose.yaml up -d --build</span></li>
-                  <li><b>04</b><span>Open localhost:8086, enter your username</span></li>
+                  <li><b>1</b><div><p class="ins-m__t">Install Docker Desktop</p><p class="ins-m__d">Free, from docker.com</p></div></li>
+                  <li><b>2</b><div><p class="ins-m__t">Download Praxis</p><p class="ins-m__d">Get the code from GitHub</p></div></li>
+                  <li><b>3</b><div><p class="ins-m__t">Choose your models</p>
+                    <div class="ins-m__sets">
+                      <div class="ins-m__set is-def">
+                        <p class="ins-m__k">Standard <span>default</span></p>
+                        <p class="ins-m__gb">8.5 GB</p>
+                        <span class="ins-m__bar" role="img" aria-label="Three models: 4.7, 2.5 and 1.3 GB"><i style="flex:4.68"></i><i style="flex:2.5"></i><i style="flex:1.27"></i></span>
+                        <p class="ins-m__d">3 models, the fullest explanations</p>
+                      </div>
+                      <div class="ins-m__set">
+                        <p class="ins-m__k">Light <span class="is-alt">optional</span></p>
+                        <p class="ins-m__gb">3.8 GB</p>
+                        <span class="ins-m__bar" role="img" aria-label="Two models: 2.5 and 1.3 GB"><i style="flex:2.5"></i><i style="flex:1.27"></i><i class="is-gap" style="flex:4.68"></i></span>
+                        <p class="ins-m__d">2 models, for smaller computers</p>
+                      </div>
+                    </div>
+                    <p class="ins-m__d">For Light, change two lines in <span class="mono">docker/.env</span> before step 4.</p></div></li>
+                  <li><b>4</b><div><p class="ins-m__t">Start it with one command</p><code class="ins-m__cmd">docker compose -f docker/compose.yaml up -d <span class="nw">--build</span></code></div></li>
+                  <li><b>5</b><div><p class="ins-m__t">Open localhost:8086</p><p class="ins-m__d">Enter your Chess.com username. That is all.</p></div></li>
                 </ol>
-                <div class="ins-m__bar m-only" hidden role="img"
-                     aria-label="First download, 8.5 GB: explanations model 4.7 GB, Ask Prax model 2.5 GB, commentary model 1.3 GB">
-                  <i style="flex:4.68"></i><i style="flex:2.5"></i><i style="flex:1.27"></i>
-                </div>
-                <p class="micro-label m-only" hidden style="margin-top:var(--s-3)">
-                  8.5 GB of models <span class="dim2">//</span> 3.8 GB light
-                </p>
 
                 <div class="m-cut" style="margin-top:var(--s-6)">
                   <details class="faq__i">
@@ -936,7 +950,7 @@
           <div class="end__foot">
             <p>Praxis Chess <span class="dim2">//</span> built by Tanmay Anand</p>
             <nav aria-label="Footer">
-              <a href="/#pipeline">Process</a>
+              <a class="m-cut" href="/#pipeline">Process</a>
               <a href="/#download">Get it</a>
               <a href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">GitHub</a>
               <a href="https://huggingface.co/collections/praxis-chess/praxis-chess-lora-v1" target="_blank" rel="noopener">Hugging Face</a>
