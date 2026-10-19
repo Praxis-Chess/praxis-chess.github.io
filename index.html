@@ -445,11 +445,11 @@
                 </div>
                 <div class="pipe__stage at" style="--s0:.54;--inv:8">
                   <span class="pipe__n">05</span><span class="pipe__t">Explain</span>
-                  <p class="pipe__b">A local model writes the reason for the top three mistakes per game by default. It is handed the engine's verdict, never asked for one.</p>
+                  <p class="pipe__b">A model trained for Praxis writes a sentence on each diagnosed mistake. It is handed the engine's verdict, never asked for one, and shown only when a checker passes every claim.</p>
                 </div>
                 <div class="pipe__stage at" style="--s0:.67;--inv:8">
                   <span class="pipe__n">06</span><span class="pipe__t">Aggregate</span>
-                  <p class="pipe__b">Mistakes become patterns and drills from your own games. The pattern summary is written by the local model from those counts.</p>
+                  <p class="pipe__b">Mistakes become a pattern report, a weekly plan and drills from your own positions. Every figure in them is computed in code.</p>
                 </div>
 
                 <div class="prob__counters" style="position:static;margin-top:var(--s-6)">
@@ -458,7 +458,7 @@
                   <span class="met at at--fade" style="--s0:.35;--inv:12">
                     <b class="met__v">18</b><span class="met__l">depth per mistake</span></span>
                   <span class="met at at--fade" style="--s0:.60;--inv:12">
-                    <b class="met__v">3</b><span class="met__l">written per game</span></span>
+                    <b class="met__v">2</b><span class="met__l">local models</span></span>
                   <span class="met at at--fade" style="--s0:.80;--inv:12">
                     <b class="met__v"><span>5·10·20</span></b><span class="met__l" title="Points of winning chance lost: 5 inaccuracy, 10 mistake, 20 blunder">win-% drop sets severity</span></span>
                 </div>
@@ -477,7 +477,7 @@
             <div class="rep">
               <div class="rep__shot at at--fade" style="--s0:0;--inv:4">
                 <figure class="shot" data-shot="report" data-focus="50% 50%" data-inspect="45% 18%"
-                        data-alt="Praxis game analysis, shown with demo data: a mistake with its severity, the engine's better move and the written explanation."></figure>
+                        data-alt="Praxis game analysis, shown with demo data: a mistake with its severity and the engine's better move."></figure>
               </div>
 
               <div class="rep__frags">
@@ -685,7 +685,7 @@
                 </div>
                 <div class="arch__row at" style="--s0:.19;--inv:9">
                   <span class="arch__k m-cut">Model</span><span class="arch__k m-only" hidden>Explanations</span>
-                  <span class="arch__v m-cut">Ollama · separate models for explanations and Ask Prax</span><span class="arch__v m-only" hidden>A local AI explains them in plain words</span>
+                  <span class="arch__v m-cut">Ollama · a 4B model for Ask Prax, a trained 2B for checked commentary</span><span class="arch__v m-only" hidden>A local AI explains them in plain words</span>
                   <span class="arch__p m-cut">:11434</span><span class="arch__p m-only" hidden>on your computer</span>
                 </div>
                 <div class="arch__row m-cut at" style="--s0:.26;--inv:9">
@@ -788,7 +788,7 @@
            What Docker does, drawn as it happens. On the desktop build the
            scene's own --p drives the timeline: each bar fills in order, and
            its LENGTH is its share of the real download, so the chart is also
-           the answer to "where do the 8.5 GB go". It is labelled as a
+           the answer to "where do the 3.8 GB go". It is labelled as a
            timeline, not a live installer, because it is not one.
            js/install.js only re-times it when a toggle changes; the motion
            itself is CSS. Without JS the defaults below are complete.
@@ -812,28 +812,21 @@
                 </p>
 
                 <!-- PHONE: five numbered steps on a line, so it reads as a sequence and
-                     not a spec table, and the one real choice (which models) is a step
-                     of its own with both options side by side. Each card's bar is drawn
-                     to the same scale, so Light is visibly the smaller download. -->
+                     not a spec table. Since v1.4.0 there is one model set; the options
+                     (a larger report writer, no commentary) are a line in docker/.env. -->
                 <ol class="ins-m m-only" hidden aria-label="Install steps">
                   <li><b>1</b><div><p class="ins-m__t">Install Docker Desktop</p><p class="ins-m__d">Free, from docker.com</p></div></li>
                   <li><b>2</b><div><p class="ins-m__t">Download Praxis</p><p class="ins-m__d">Get the code from GitHub</p></div></li>
-                  <li><b>3</b><div><p class="ins-m__t">Choose your models</p>
+                  <li><b>3</b><div><p class="ins-m__t">The models download on first start</p>
                     <div class="ins-m__sets">
                       <div class="ins-m__set is-def">
-                        <p class="ins-m__k">Standard <span>default</span></p>
-                        <p class="ins-m__gb">8.5 GB</p>
-                        <span class="ins-m__bar" role="img" aria-label="Three models: 4.7, 2.5 and 1.3 GB"><i style="flex:4.68"></i><i style="flex:2.5"></i><i style="flex:1.27"></i></span>
-                        <p class="ins-m__d">3 models, the fullest explanations</p>
-                      </div>
-                      <div class="ins-m__set">
-                        <p class="ins-m__k">Light <span class="is-alt">optional</span></p>
+                        <p class="ins-m__k">Two models</p>
                         <p class="ins-m__gb">3.8 GB</p>
-                        <span class="ins-m__bar" role="img" aria-label="Two models: 2.5 and 1.3 GB"><i style="flex:2.5"></i><i style="flex:1.27"></i><i class="is-gap" style="flex:4.68"></i></span>
-                        <p class="ins-m__d">2 models, for smaller computers</p>
+                        <span class="ins-m__bar" role="img" aria-label="Two models: 2.5 and 1.3 GB"><i style="flex:2.5"></i><i style="flex:1.27"></i></span>
+                        <p class="ins-m__d">Reports and Ask Prax, plus checked commentary</p>
                       </div>
                     </div>
-                    <p class="ins-m__d">For Light, change two lines in <span class="mono">docker/.env</span> before step 4.</p></div></li>
+                    <p class="ins-m__d">Optional, in <span class="mono">docker/.env</span>: a larger report writer (+4.7 GB) or no commentary (−1.3 GB).</p></div></li>
                   <li><b>4</b><div><p class="ins-m__t">Start it with one command</p><code class="ins-m__cmd">docker compose -f docker/compose.yaml up -d <span class="nw">--build</span></code></div></li>
                   <li><b>5</b><div><p class="ins-m__t">Open localhost:8086</p><p class="ins-m__d">Enter your Chess.com username. That is all.</p></div></li>
                 </ol>
@@ -857,9 +850,10 @@
                   </details>
                   <details class="faq__i">
                     <summary class="faq__q">How do I back up my games? <i>+</i></summary>
-                    <p class="faq__a">One command writes a database dump to a backups
-                      folder: <span class="mono">docker compose -f docker/compose.yaml run --rm backup</span>.
-                      The install guide covers restoring, upgrading and uninstalling.</p>
+                    <p class="faq__a">You don't need to: Praxis backs up on its own. A snapshot
+                      a day when something changed and one before every re-analysis, kept in a
+                      backups folder on your computer and never deleted. Settings → Backups lists
+                      them; the install guide covers restoring, upgrading and uninstalling.</p>
                   </details>
                 </div>
               </div>
@@ -870,10 +864,6 @@
                     <button type="button" data-os="gpu" aria-pressed="true">Windows · Linux, NVIDIA</button>
                     <button type="button" data-os="mac" aria-pressed="false">Mac</button>
                     <button type="button" data-os="cpu" aria-pressed="false">No GPU</button>
-                  </div>
-                  <div class="ins__seg" role="group" aria-label="Models">
-                    <button type="button" data-set="standard" aria-pressed="true">Standard</button>
-                    <button type="button" data-set="light" aria-pressed="false">Light</button>
                   </div>
                 </div>
 
@@ -886,7 +876,7 @@
                   <li><code data-ins-up>docker compose -f docker/compose.yaml -f docker/compose.gpu.yaml up -d --build</code>
                     <button type="button" class="ins__copy" data-ins-copy data-copy="docker compose -f docker/compose.yaml -f docker/compose.gpu.yaml up -d --build"><span data-label>copy</span></button></li>
                 </ol>
-                <p class="ins__pre" data-ins-light hidden>Light set: copy <span class="mono">docker/.env.example</span> to <span class="mono">docker/.env</span> and uncomment its two light-set lines first.</p>
+                <p class="ins__pre">Optional, in <span class="mono">docker/.env</span>: a larger report writer (+4.7 GB) or no commentary (−1.3 GB). See <span class="mono">docker/.env.example</span>.</p>
 
                 <p class="micro-label ins__k"><span>What <span class="mono">up</span> does <span class="dim2">//</span> length = share of download</span><span class="ins__hint" aria-hidden="true">scroll to run it ↓</span></p>
                 <ul class="ins__rows">
@@ -896,14 +886,11 @@
                   <li class="ins__row at" data-row="app" style="--s0:.12;--inv:12">
                     <span class="ins__n">app<small>Stockfish 19 inside</small></span><span class="ins__t" style="--w:.14"><i></i></span>
                     <span class="ins__v">built<b>✓</b></span></li>
-                  <li class="ins__row at" data-row="qwen2.5:7b" data-gb="4.68" style="--s0:.22;--inv:3.4">
-                    <span class="ins__n">qwen2.5:7b<small>explanations, reports</small></span><span class="ins__t" style="--w:1"><i></i></span>
-                    <span class="ins__v">4.7 GB<b>✓</b></span></li>
-                  <li class="ins__row at" data-row="qwen3:4b-instruct" data-gb="2.5" style="--s0:.515;--inv:6.4">
-                    <span class="ins__n">qwen3:4b-instruct<small>Ask Prax</small></span><span class="ins__t" style="--w:.534"><i></i></span>
+                  <li class="ins__row at" data-row="qwen3:4b-instruct" data-gb="2.5" style="--s0:.22;--inv:2.79">
+                    <span class="ins__n">qwen3:4b-instruct<small>reports, Ask Prax</small></span><span class="ins__t" style="--w:1"><i></i></span>
                     <span class="ins__v">2.5 GB<b>✓</b></span></li>
-                  <li class="ins__row at" data-row="praxis-grid-2b-r3" data-gb="1.27" style="--s0:.672;--inv:12.6">
-                    <span class="ins__n">praxis-grid-2b-r3<small>checked commentary, trained for Praxis</small></span><span class="ins__t" style="--w:.271"><i></i></span>
+                  <li class="ins__row at" data-row="praxis-grid-2b-r3" data-gb="1.27" style="--s0:.578;--inv:5.49">
+                    <span class="ins__n">praxis-grid-2b-r3<small>checked commentary, trained for Praxis</small></span><span class="ins__t" style="--w:.508"><i></i></span>
                     <span class="ins__v">1.3 GB<b>✓</b></span></li>
                 </ul>
                 <p class="ins__done at at--fade" style="--s0:.78;--inv:8">
@@ -915,7 +902,7 @@
                     <input type="number" inputmode="numeric" min="1" max="10000" step="1" value="50" data-ins-speed aria-label="Your download speed in megabits per second" />
                     Mbit/s
                   </label>
-                  <span class="ins__total" data-ins-total aria-live="polite">8.5 GB of models ≈ 23 min of download</span>
+                  <span class="ins__total" data-ins-total aria-live="polite">3.8 GB of models ≈ 10 min of download</span>
                 </div>
                 <p class="ins__links micro-label">
                   <a href="https://github.com/Praxis-Chess/Praxis-Chess" target="_blank" rel="noopener">Source · MIT</a>

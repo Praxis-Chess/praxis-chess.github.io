@@ -1,17 +1,19 @@
 /* ==========================================================================
    install.js — the Install scene's toggles. Desktop build only.
 
-       <div data-install> … [data-os] [data-set] [data-row] [data-ins-speed] …
+       <div data-install> … [data-os] [data-row] [data-ins-speed] …
 
    THE MOTION IS NOT HERE. Each row is an `.at` element, so the scene's --p
    fills its bar through CSS, as everywhere else on the page. This file only
    re-times the rows when a toggle changes what gets downloaded:
 
-     - which rows exist (the light set drops the 7B model),
      - each bar's LENGTH, its share of the largest download (--w),
      - each bar's START and SPAN in the scene (--s0, --inv), laid end to end
-       in proportion to bytes, so a 4.7 GB model takes four times the scroll
+       in proportion to bytes, so a 2.5 GB model takes twice the scroll
        of a 1.3 GB one — the chart is the size of the wait.
+
+   Since v1.4.0 there is one model set (qwen2.5:7b is retired); a larger
+   report writer or no commentary are lines in docker/.env, not a toggle.
 
    And it rewrites the one command that differs per computer, including the
    copy button's data-copy (js/copy.js reads that at click time, so nothing
@@ -31,40 +33,30 @@ window.PAGE.register('install', function (scope) {
   var root = scope.querySelector('[data-install]');
   if (!root) return;
 
-  var GB = { 'qwen2.5:7b': 4.68, 'qwen3:4b-instruct': 2.5, 'praxis-grid-2b-r3': 1.27 };
-  var SETS = {
-    standard: ['qwen2.5:7b', 'qwen3:4b-instruct', 'praxis-grid-2b-r3'],
-    light: ['qwen3:4b-instruct', 'praxis-grid-2b-r3']
-  };
+  var GB = { 'qwen3:4b-instruct': 2.5, 'praxis-grid-2b-r3': 1.27 };
+  var MODELS = ['qwen3:4b-instruct', 'praxis-grid-2b-r3'];
   var UP = {
     gpu: 'docker compose -f docker/compose.yaml -f docker/compose.gpu.yaml up -d --build',
     mac: 'docker compose -f docker/compose.yaml -f docker/compose.host-ollama.yaml up -d --build',
     cpu: 'docker compose -f docker/compose.yaml up -d --build'
   };
-  var ROLE_LIGHT = { 'qwen3:4b-instruct': 'explanations, reports, Ask Prax' };
 
   /* The span of the scene the model bars share, in --p units. Starts after
      the database and app rows, ends before the "open localhost" line. */
   var FROM = 0.22, TO = 0.76;
 
-  var state = { os: 'gpu', set: 'standard' };
+  var state = { os: 'gpu' };
   var bound = [];
 
   var up = root.querySelector('[data-ins-up]');
   var upCopy = root.querySelector('[data-ins-copy]');
   var pre = root.querySelector('[data-ins-pre]');
-  var lightNote = root.querySelector('[data-ins-light]');
   var speed = root.querySelector('[data-ins-speed]');
   var total = root.querySelector('[data-ins-total]');
   var rows = Array.prototype.slice.call(root.querySelectorAll('[data-row][data-gb]'));
-  var roles = {};
-  rows.forEach(function (r) {
-    var role = r.querySelector('.ins__n small');
-    roles[r.getAttribute('data-row')] = role ? role.textContent : '';
-  });
 
-  /* Half-up, not toFixed: 4.68 + 2.5 + 1.27 is 8.450000000000001 in floating
-     point, which toFixed(1) turns into "8.4" while every other line says 8.5. */
+  /* Half-up, not toFixed: a sum like 4.68 + 2.5 + 1.27 is 8.450000000000001 in
+     floating point, which toFixed(1) turns into "8.4" where "8.5" is meant. */
   function fmtGb(x) { return (Math.round(x * 10 + 1e-9) / 10).toFixed(1) + ' GB'; }
 
   function fmtTime(seconds) {
@@ -76,22 +68,17 @@ window.PAGE.register('install', function (scope) {
   }
 
   function render() {
-    var names = SETS[state.set];
+    var names = MODELS;
     var bytes = names.reduce(function (a, n) { return a + GB[n]; }, 0);
     var largest = Math.max.apply(null, names.map(function (n) { return GB[n]; }));
 
     var at = FROM;
     rows.forEach(function (r) {
       var name = r.getAttribute('data-row');
-      var on = names.indexOf(name) >= 0;
-      r.hidden = !on;
-      if (!on) return;
       var span = (TO - FROM) * GB[name] / bytes;
       r.style.setProperty('--s0', at.toFixed(3));
       r.style.setProperty('--inv', (1 / span).toFixed(2));
       r.querySelector('.ins__t').style.setProperty('--w', (GB[name] / largest).toFixed(3));
-      var role = r.querySelector('.ins__n small');
-      if (role) role.textContent = (state.set === 'light' && ROLE_LIGHT[name]) || roles[name];
       at += span;
     });
 
@@ -99,7 +86,6 @@ window.PAGE.register('install', function (scope) {
     up.textContent = cmd;
     upCopy.setAttribute('data-copy', cmd);
     pre.hidden = state.os !== 'mac';
-    lightNote.hidden = state.set !== 'light';
 
     var mbit = parseFloat(speed.value);
     var where = state.os === 'mac' ? ' into your Ollama' : ' of models';
@@ -123,9 +109,6 @@ window.PAGE.register('install', function (scope) {
 
   Array.prototype.forEach.call(root.querySelectorAll('[data-os]'), function (b) {
     on(b, 'click', function () { press('os', 'data-os', b.getAttribute('data-os')); });
-  });
-  Array.prototype.forEach.call(root.querySelectorAll('[data-set]'), function (b) {
-    on(b, 'click', function () { press('set', 'data-set', b.getAttribute('data-set')); });
   });
   on(speed, 'input', render);
   /* The page owns the wheel and arrow keys on the desktop build; typing a
